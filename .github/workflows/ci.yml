@@ -8,6 +8,9 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    env:
+      NLP_PROVIDER: heuristic
+      PYTHONPATH: .
     defaults:
       run:
         working-directory: backend
@@ -21,6 +24,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+      - name: Static import smoke check
+        run: python -m compileall app
       - name: Run tests
         run: pytest -q
 
@@ -38,5 +43,7 @@ jobs:
           cache-dependency-path: frontend/package.json
       - name: Install dependencies
         run: npm install
+      - name: Lint
+        run: npm run lint
       - name: Build
         run: npm run build
