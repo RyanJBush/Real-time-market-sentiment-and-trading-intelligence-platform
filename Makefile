@@ -31,6 +31,7 @@ ci-local:
 
 demo-seed:
 	cd backend && pip install -r requirements.txt && NLP_PROVIDER=heuristic PYTHONPATH=. python scripts/seed_demo.py
+	cd backend && pip install -r requirements.txt && NLP_PROVIDER=heuristic PYTHONPATH=. pytest -q
 
 format:
 	@echo "Add formatters (ruff/prettier) as project evolves"
