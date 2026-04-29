@@ -80,6 +80,28 @@ def test_news_ingest_and_sentiment_pipeline(client) -> None:
     assert pipeline_body["signals_created"] == len(pipeline_body["tickers"])
 
 
+def test_ingest_and_score_rerun_generates_signals_for_requested_tickers(client) -> None:
+    payload = {
+        "tickers": ["AAPL", "MSFT"],
+        "limit_per_ticker": 2,
+        "sources": ["financial_news", "earnings_wire"],
+        "mode": "historical_backfill",
+        "lookback_days": 5,
+    }
+
+    first_run = client.post("/api/v1/news/ingest-and-score", json=payload)
+    assert first_run.status_code == 200
+
+    second_run = client.post("/api/v1/news/ingest-and-score", json=payload)
+    assert second_run.status_code == 200
+
+    body = second_run.json()
+    assert body["news_items_inserted"] == 0
+    assert body["sentiments_created"] == 0
+    assert body["tickers"] == ["AAPL", "MSFT"]
+    assert body["signals_created"] == len(body["tickers"])
+
+
 def test_ticker_drilldown_and_backtest_scaffold(client) -> None:
     client.post(
         "/api/v1/sentiment/analyze",
