@@ -224,6 +224,43 @@ def test_watchlist_signal_generation(client) -> None:
         assert "severity" in alerts.json()["alerts"][0]
 
 
+def test_phase1_multi_source_ingestion_with_prices(client) -> None:
+    ingest = client.post(
+        "/api/v1/news/ingest",
+        json={
+            "tickers": ["AAPL", "TSLA"],
+            "limit_per_ticker": 2,
+            "sources": ["financial_news", "social_curated", "financial_price"],
+            "mode": "realtime",
+            "lookback_days": 2,
+        },
+    )
+    assert ingest.status_code == 200
+    assert len(ingest.json()) == 8
+
+    run_id = int(ingest.headers["X-Ingestion-Run-Id"])
+    status = client.get(f"/api/v1/news/ingest/status/{run_id}")
+    assert status.status_code == 200
+    body = status.json()
+    assert body["source_stats"]["financial_price"] == 4
+    assert body["records_inserted"] == 12
+
+    second = client.post(
+        "/api/v1/news/ingest",
+        json={
+            "tickers": ["AAPL"],
+            "limit_per_ticker": 2,
+            "sources": ["financial_news"],
+            "mode": "realtime",
+            "lookback_days": 2,
+        },
+    )
+    second_run_id = int(second.headers["X-Ingestion-Run-Id"])
+    second_status = client.get(f"/api/v1/news/ingest/status/{second_run_id}")
+    assert second_status.status_code == 200
+    assert second_status.json()["duplicates_skipped"] >= 1
+
+
 def test_trust_explanations_annotations_and_briefings(client) -> None:
     client.post(
         "/api/v1/sentiment/analyze",
@@ -323,3 +360,19 @@ def test_platform_readiness_tracing_and_replay(client) -> None:
     )
     assert sentiment_job.status_code == 200
     assert sentiment_job.json()["job_type"] == "sentiment_batch"
+
+
+def test_dashboard_overview_uses_signed_sentiment_average(client) -> None:
+    client.post(
+        "/api/v1/sentiment/analyze",
+        json={"ticker": "AAPL", "source": "financial_news", "text": "Apple beat earnings and raised guidance."},
+    )
+    client.post(
+        "/api/v1/sentiment/analyze",
+        json={"ticker": "AAPL", "source": "financial_news", "text": "Apple miss raised concerns after a downgrade."},
+    )
+
+    overview = client.get("/api/v1/analytics/overview?lookback_hours=24&watchlist=AAPL")
+    assert overview.status_code == 200
+    body = overview.json()
+    assert abs(body["avg_sentiment_score"]) <= 0.2

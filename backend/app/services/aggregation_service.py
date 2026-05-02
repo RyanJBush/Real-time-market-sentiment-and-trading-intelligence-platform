@@ -43,6 +43,9 @@ class AggregationService:
             return -1.0
         return 0.0
 
+    def _signed_score(self, score: float, label: str) -> float:
+        return self._label_to_direction(label) * score
+
     def summarize_ticker(self, db: Session, ticker: str, lookback_hours: int = 24) -> TickerAggregationResponse:
         ticker_upper = ticker.upper()
         cache_key = f"{ticker_upper}:{lookback_hours}"
@@ -80,7 +83,7 @@ class AggregationService:
             return payload
 
         total = len(records)
-        avg_score = sum(r.score for r in records) / total
+        avg_score = sum(self._signed_score(r.score, r.label) for r in records) / total
         avg_confidence = sum(r.confidence for r in records) / total
 
         pos_count = 0
@@ -285,7 +288,10 @@ class AggregationService:
         return DashboardOverviewResponse(
             lookback_hours=lookback_hours,
             articles_processed=len(sentiments),
-            avg_sentiment_score=round(sum(row.score for row in sentiments) / len(sentiments), 4),
+            avg_sentiment_score=round(
+                sum(self._signed_score(row.score, row.label) for row in sentiments) / len(sentiments),
+                4,
+            ),
             avg_confidence=round(sum(row.confidence for row in sentiments) / len(sentiments), 4),
             watchlist_alerts=watchlist_alerts,
             most_mentioned_tickers=sorted_tickers[:10],

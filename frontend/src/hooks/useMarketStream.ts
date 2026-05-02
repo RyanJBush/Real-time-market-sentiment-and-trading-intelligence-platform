@@ -8,12 +8,18 @@ export function useMarketStream(limit = 30) {
   const [isLive, setIsLive] = useState(false);
 
   useEffect(() => {
+    let stopMock: (() => void) | null = null;
     const socket = connectStream((message) => {
       setEvents((prev) => [message, ...prev].slice(0, limit));
       setIsLive(true);
+
+      if (stopMock) {
+        stopMock();
+        stopMock = null;
+      }
     });
 
-    const stopMock = startMockStream((message) => {
+    stopMock = startMockStream((message) => {
       setEvents((prev) => [message, ...prev].slice(0, limit));
     });
 
@@ -21,7 +27,9 @@ export function useMarketStream(limit = 30) {
     socket.onerror = () => setIsLive(false);
 
     return () => {
-      stopMock();
+      if (stopMock) {
+        stopMock();
+      }
       socket.close();
     };
   }, [limit]);
