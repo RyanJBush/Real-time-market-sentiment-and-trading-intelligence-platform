@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import sha1
 import json
+import random
 import re
 
 from sqlalchemy import desc, select
@@ -9,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.models.ingestion import IngestionRun
 from app.models.news import NewsItem
+from app.models.price import PricePoint
 from app.schemas.news import IngestNewsRequest, IngestionRunResponse, NewsItemResponse
 from app.services.weighting_service import get_source_weight
 
@@ -57,8 +59,16 @@ class NewsIngestionService:
         return datetime.now(timezone.utc).replace(tzinfo=None)
 
     @staticmethod
+    def _clean_text(value: str) -> str:
+        return re.sub(r"\s+", " ", value).strip()
+
+    @staticmethod
     def _dedupe_key(ticker: str, source_type: str, headline: str) -> str:
         return sha1(f"{ticker}|{source_type}|{headline.strip().lower()}".encode("utf-8")).hexdigest()
+
+    @staticmethod
+    def _price_dedupe_key(ticker: str, observed_at: datetime) -> str:
+        return sha1(f"{ticker}|price|{observed_at.isoformat()}".encode("utf-8")).hexdigest()
 
     @staticmethod
     def _extract_related_tickers(text: str, ticker: str) -> list[str]:
@@ -80,18 +90,42 @@ class NewsIngestionService:
         return "closed"
 
     @staticmethod
-    def _published_at_for(
-        mode: str,
-        ticker_idx: int,
-        source_idx: int,
-        article_idx: int,
-        lookback_days: int,
-    ) -> datetime:
+    def _published_at_for(mode: str, ticker_idx: int, source_idx: int, article_idx: int, lookback_days: int) -> datetime:
         now = NewsIngestionService._utc_now()
         if mode == "historical_backfill":
             offset_hours = (ticker_idx * 12) + (source_idx * 4) + (article_idx + 1) * 6
             return now - timedelta(hours=min(offset_hours, lookback_days * 24))
         return now - timedelta(minutes=(source_idx * 7) + (article_idx * 3))
+
+    def _ingest_price_batch(self, db: Session, ticker: str, lookback_days: int, limit_per_ticker: int) -> int:
+        now = self._utc_now()
+        randomizer = random.Random(f"{ticker}-{lookback_days}-{limit_per_ticker}")
+        inserted = 0
+        base = randomizer.uniform(95, 275)
+        for idx in range(limit_per_ticker):
+            observed_at = (now - timedelta(minutes=idx * 5)).replace(second=0, microsecond=0)
+            open_px = base + randomizer.uniform(-2, 2)
+            close_px = open_px + randomizer.uniform(-3, 3)
+            high_px = max(open_px, close_px) + randomizer.uniform(0.1, 1.5)
+            low_px = min(open_px, close_px) - randomizer.uniform(0.1, 1.5)
+            dedupe_key = self._price_dedupe_key(ticker, observed_at)
+            if db.scalar(select(PricePoint.id).where(PricePoint.dedupe_key == dedupe_key)):
+                continue
+            db.add(
+                PricePoint(
+                    ticker=ticker,
+                    dedupe_key=dedupe_key,
+                    open=round(open_px, 2),
+                    high=round(high_px, 2),
+                    low=round(low_px, 2),
+                    close=round(close_px, 2),
+                    volume=round(randomizer.uniform(8e5, 8e6), 0),
+                    observed_at=observed_at,
+                    ingested_at=now,
+                )
+            )
+            inserted += 1
+        return inserted
 
     def ingest_news(self, db: Session, payload: IngestNewsRequest) -> IngestionResult:
         run = IngestionRun(
@@ -112,6 +146,11 @@ class NewsIngestionService:
             for ticker_idx, raw_ticker in enumerate(payload.tickers):
                 ticker = raw_ticker.upper()
                 for source_idx, source_type in enumerate(payload.sources):
+                    if source_type == "financial_price":
+                        points_inserted = self._ingest_price_batch(db, ticker, payload.lookback_days, payload.limit_per_ticker)
+                        source_stats[source_type] = source_stats.get(source_type, 0) + points_inserted
+                        continue
+
                     descriptor = SOURCE_DESCRIPTORS.get(source_type)
                     if descriptor is None:
                         failures += 1
@@ -119,17 +158,10 @@ class NewsIngestionService:
 
                     templates = SOURCE_HEADLINES.get(source_type, ["{ticker} trades flat as investors await catalyst"])
                     for article_idx, template in enumerate(templates[: payload.limit_per_ticker]):
-                        published_at = self._published_at_for(
-                            payload.mode,
-                            ticker_idx=ticker_idx,
-                            source_idx=source_idx,
-                            article_idx=article_idx,
-                            lookback_days=payload.lookback_days,
-                        )
-                        headline = template.format(ticker=ticker)
-                        content = (
-                            f"{headline}. Event classification: {descriptor['event_type']}."
-                            f" Ingestion mode: {payload.mode}."
+                        published_at = self._published_at_for(payload.mode, ticker_idx, source_idx, article_idx, payload.lookback_days)
+                        headline = self._clean_text(template.format(ticker=ticker))
+                        content = self._clean_text(
+                            f"{headline}. Event classification: {descriptor['event_type']}. Ingestion mode: {payload.mode}."
                         )
                         dedupe_key = self._dedupe_key(ticker=ticker, source_type=source_type, headline=headline)
 
@@ -174,7 +206,7 @@ class NewsIngestionService:
                         )
                         source_stats[source_type] = source_stats.get(source_type, 0) + 1
 
-            run.records_inserted = len(inserted)
+            run.records_inserted = len(inserted) + source_stats.get("financial_price", 0)
             run.duplicates_skipped = duplicates_skipped
             run.failures_count = failures
             run.source_stats = json.dumps(source_stats, sort_keys=True)

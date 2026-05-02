@@ -5,8 +5,6 @@ import { WATCHLIST } from '../data/mockMarket';
 import { useMarketStream } from '../hooks/useMarketStream';
 import { getBacktestScenarios, getWatchlistAlerts, getWatchlistSignals } from '../services/api';
 import type { ScenarioBacktestResponse, Signal, WatchlistAlert } from '../types/market';
-import { getWatchlistAlerts, getWatchlistSignals } from '../services/api';
-import type { Signal, WatchlistAlert } from '../types/market';
 
 function SignalsPage() {
   const { events } = useMarketStream(25);
@@ -24,12 +22,14 @@ function SignalsPage() {
     })();
   }, []);
 
-  const latestStreamScores = useMemo(() => {
-    return events
-      .filter((item) => item.event === 'sentiment_update' && item.ticker && item.score !== undefined)
-      .slice(0, 5)
-      .map((item) => `${item.ticker}: ${item.score}`);
-  }, [events]);
+  const latestStreamScores = useMemo(
+    () =>
+      events
+        .filter((item) => item.event === 'sentiment_update' && item.ticker && item.score !== undefined)
+        .slice(0, 5)
+        .map((item) => `${item.ticker}: ${item.score}`),
+    [events],
+  );
 
   return (
     <section>

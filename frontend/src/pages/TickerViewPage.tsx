@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import PageHeader from '../components/PageHeader';
-import TickerFilter from '../components/dashboard/TickerFilter';
 import SentimentChart from '../components/dashboard/SentimentChart';
+import TickerFilter from '../components/dashboard/TickerFilter';
 import { WATCHLIST } from '../data/mockMarket';
-import { getSignalExplanation, getTickerAggregation, getTickerArticleTable, getTickerDrilldown, getTickerMetrics, getTickerSignal } from '../services/api';
+import {
+  getSignalExplanation,
+  getTickerAggregation,
+  getTickerArticleTable,
+  getTickerDrilldown,
+  getTickerMetrics,
+  getTickerSignal,
+} from '../services/api';
 import type {
   Signal,
   SignalExplanationResponse,
@@ -13,8 +20,6 @@ import type {
   TickerDrilldownResponse,
   TickerMetricsResponse,
 } from '../types/market';
-import { getTickerAggregation, getTickerArticleTable, getTickerMetrics, getTickerSignal } from '../services/api';
-import type { Signal, TickerAggregation, TickerArticleTable, TickerMetricsResponse } from '../types/market';
 
 function TickerViewPage() {
   const [selectedTicker, setSelectedTicker] = useState('AAPL');
@@ -28,10 +33,6 @@ function TickerViewPage() {
   useEffect(() => {
     void (async () => {
       const [aggregationData, signalData, articleData, metricsData, drilldownData, explanationData] = await Promise.all([
-
-  useEffect(() => {
-    void (async () => {
-      const [aggregationData, signalData, articleData, metricsData] = await Promise.all([
         getTickerAggregation(selectedTicker),
         getTickerSignal(selectedTicker),
         getTickerArticleTable(selectedTicker),
@@ -51,8 +52,8 @@ function TickerViewPage() {
   const chartSeries = useMemo(() => {
     const points = metrics?.points ?? [];
     if (!points.length) {
-      const base = aggregate?.avg_score ?? 0.5;
-      return Array.from({ length: 12 }).map((_, index) => Math.min(0.95, Math.max(0.1, base + (index % 2 ? 0.03 : -0.02))));
+      const base = aggregate?.avg_score ?? 0.0;
+      return Array.from({ length: 12 }).map((_, index) => Math.min(0.95, Math.max(0.1, 0.5 + base / 2 + (index % 2 ? 0.03 : -0.02))));
     }
     return points.map((point) => Math.min(1, Math.max(0, (point.weighted_sentiment_score + 1) / 2)));
   }, [aggregate, metrics]);

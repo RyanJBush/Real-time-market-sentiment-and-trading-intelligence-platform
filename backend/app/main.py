@@ -11,7 +11,7 @@ from app.core.logging import configure_logging
 from app.core.middleware import inject_request_id
 from app.db.session import Base, engine
 from app.db.session import get_db
-from app.models import annotation, ingestion, news, sentiment, signal  # noqa: F401
+from app.models import annotation, ingestion, news, price, sentiment, signal  # noqa: F401
 
 
 @asynccontextmanager

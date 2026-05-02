@@ -23,7 +23,7 @@ Simple but realistic scaffold for a real-time stock sentiment platform.
 - Real-time event updates via WebSocket + mock stream fallback
 
 ## Implemented backend workflow
-1. `POST /api/v1/news/ingest` (multi-source ingestion + dedupe + run tracking)
+1. `POST /api/v1/news/ingest` (multi-source ingestion: news + social + simulated price bars, cleaning, dedupe, batch run tracking)
    - `POST /api/v1/news/ingest-and-score` to execute ingestion → sentiment persistence → signal generation in one call.
 2. `GET /api/v1/news/ingest/status/{run_id}` (ingestion status)
 3. `POST /api/v1/sentiment/analyze` (finance-aware sentiment + confidence)
@@ -99,7 +99,7 @@ make demo-seed
 - `NVDA`
 
 ## Next Steps
-- Connect ingestion to a real market/news provider.
+- Connect simulated price/news ingestion to real market/news providers.
 - Add auth, migrations, and scheduling.
 - Implement charting library + richer portfolio analytics.
 

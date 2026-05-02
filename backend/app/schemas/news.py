@@ -8,7 +8,7 @@ class IngestNewsRequest(BaseModel):
     tickers: list[str] = Field(..., min_length=1, max_length=10)
     limit_per_ticker: int = Field(default=3, ge=1, le=10)
     sources: list[str] = Field(
-        default=["financial_news", "press_release", "earnings_wire", "social_curated"],
+        default=["financial_news", "press_release", "earnings_wire", "social_curated", "financial_price"],
         min_length=1,
         max_length=6,
     )
@@ -28,6 +28,19 @@ class NewsItemResponse(BaseModel):
     headline: str
     content: str
     published_at: datetime
+    ingested_at: datetime
+
+
+class PricePointResponse(BaseModel):
+    id: int
+    ticker: str
+    source: str
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: float
+    observed_at: datetime
     ingested_at: datetime
 
 
