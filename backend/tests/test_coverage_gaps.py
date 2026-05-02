@@ -1,5 +1,6 @@
 import asyncio
 import json
+from datetime import datetime, timedelta
 
 import pytest
 from pydantic import ValidationError
@@ -8,7 +9,9 @@ from fastapi import HTTPException
 from app.api.v1.routers import streaming
 from app.core.middleware import RequestRateLimiter
 from app.schemas.sentiment import SentimentRequest
+from app.services.cache_service import TtlCache
 from app.services.stream_service import StreamManager, make_broadcast_event_factory
+from app.services.weighting_service import get_source_weight, market_hours_multiplier, time_decay_multiplier
 
 
 class _DummyWebSocket:
@@ -133,3 +136,58 @@ def test_rate_limiter_overflow_branch() -> None:
 def test_sentiment_request_requires_content() -> None:
     with pytest.raises(ValidationError):
         SentimentRequest(ticker="AAPL", source="financial_news")
+
+def test_weighting_service_source_weights_and_fallback() -> None:
+    assert get_source_weight("financial_news") == 1.0
+    assert get_source_weight("earnings_wire") == 1.15
+    assert get_source_weight("unknown_source") == 0.7
+
+
+def test_weighting_service_market_hours_and_time_decay() -> None:
+    weekday_market_open = datetime(2026, 4, 29, 14, 0)  # Wednesday during market hours UTC
+    weekday_after_hours = datetime(2026, 4, 29, 22, 0)
+    weekend = datetime(2026, 5, 2, 14, 0)  # Saturday
+
+    assert market_hours_multiplier(weekday_market_open) == 1.1
+    assert market_hours_multiplier(weekday_after_hours) == 0.95
+    assert market_hours_multiplier(weekend) == 0.9
+
+    now = datetime(2026, 5, 2, 12, 0)
+    fresh = now
+    old = now - timedelta(hours=24)
+    future = now + timedelta(hours=2)
+
+    assert time_decay_multiplier(fresh, now=now) == 1.0
+    assert 0 < time_decay_multiplier(old, now=now) < 1.0
+    assert time_decay_multiplier(future, now=now) == 1.0
+
+
+def test_ttl_cache_set_get_expire_and_clear(monkeypatch) -> None:
+    cache: TtlCache[int] = TtlCache(ttl_seconds=2)
+    base = datetime(2026, 5, 2, 12, 0)
+
+    monkeypatch.setattr(TtlCache, "_now", staticmethod(lambda: base))
+    cache.set("k", 5)
+    assert cache.get("k") == 5
+
+    monkeypatch.setattr(TtlCache, "_now", staticmethod(lambda: base + timedelta(seconds=3)))
+    assert cache.get("k") is None
+
+    monkeypatch.setattr(TtlCache, "_now", staticmethod(lambda: base))
+    cache.set("k2", 8)
+    cache.clear()
+    assert cache.get("k2") is None
+
+
+def test_query_validation_boundaries(client) -> None:
+    bad_lookback = client.get("/api/v1/trust/signals/AAPL/explanation?lookback_hours=0")
+    assert bad_lookback.status_code == 422
+
+    bad_top_n = client.get("/api/v1/trust/signals/AAPL/explanation?top_n=99")
+    assert bad_top_n.status_code == 422
+
+    bad_limit = client.get("/api/v1/trust/annotations/AAPL?limit=0")
+    assert bad_limit.status_code == 422
+
+    bad_signal_limit = client.get("/api/v1/trust/signals/AAPL/audit?limit=500")
+    assert bad_signal_limit.status_code == 422
