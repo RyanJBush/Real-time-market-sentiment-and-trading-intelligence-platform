@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import PageHeader from '../components/PageHeader';
+import SignalBadge from '../components/dashboard/SignalBadge';
 import { WATCHLIST } from '../data/mockMarket';
 import { useMarketStream } from '../hooks/useMarketStream';
 import { getBacktestScenarios, getWatchlistAlerts, getWatchlistSignals } from '../services/api';
@@ -50,9 +51,7 @@ function SignalsPage() {
               <tr key={signal.ticker}>
                 <td>{signal.ticker}</td>
                 <td>
-                  <span className={`badge ${signal.signal === 'BUY' ? 'positive' : signal.signal === 'SELL' ? 'negative' : 'neutral'}`}>
-                    {signal.signal}
-                  </span>
+                  <SignalBadge signal={signal.signal} size="sm" />
                 </td>
                 <td>{(signal.confidence * 100).toFixed(1)}%</td>
                 <td>{signal.rationale}</td>
