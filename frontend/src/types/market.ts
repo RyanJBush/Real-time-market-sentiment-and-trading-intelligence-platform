@@ -152,6 +152,7 @@ export interface SignalContributor {
   score: number;
   confidence: number;
   contribution_weight: number;
+  text_preview: string;
 }
 
 export interface SourceContradiction {

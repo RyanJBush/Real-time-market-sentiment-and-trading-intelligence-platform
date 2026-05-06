@@ -17,10 +17,15 @@ Simple but realistic scaffold for a real-time stock sentiment platform.
 - Signals
 
 ## Frontend features
-- KPI cards and market summary
-- Sentiment sparkline charts
-- Ticker filtering and detail drilldowns
-- Real-time event updates via WebSocket + mock stream fallback
+- KPI cards (sentiment index, active signals, top movers, watchlist alerts, stream health)
+- Ticker sentiment grid with stacked positive/neutral/negative bars
+- Trend-aware sentiment sparkline charts (area fill, grid, gradient accent colour)
+- Ticker filtering and detail drill-downs
+- Signal badges (colour-coded BUY / SELL / HOLD)
+- "▶ Start simulation" button that runs ingest → NLP → signal on a 10-second loop and broadcasts WebSocket events
+- Article sentiment feed with per-article label, score, confidence, and model used
+- Signal explainability panel: article text → sentiment score → signal with source-contradiction detection
+- Real-time event tape updated via WebSocket + mock stream fallback
 
 ## Implemented backend workflow
 1. `POST /api/v1/news/ingest` (multi-source ingestion: news + social + simulated price bars, cleaning, dedupe, batch run tracking)
@@ -43,13 +48,14 @@ Simple but realistic scaffold for a real-time stock sentiment platform.
 13. `POST /api/v1/backtesting/tune` (threshold tuning grid search)
 14. `GET /api/v1/backtesting/scenarios/{ticker}` (preset scenario leaderboard: conservative/balanced/aggressive)
 15. `POST /api/v1/backtesting/paper-trade` (paper-trading simulation ledger)
-16. `WS /api/v1/streaming/ws` (real-time updates)
-17. `GET /api/v1/trust/signals/{ticker}/explanation` (article-to-signal traceability + contradiction detection)
-18. `POST /api/v1/trust/annotations` and `GET /api/v1/trust/annotations/{ticker}` (analyst annotation workflow)
-19. `GET /api/v1/trust/signals/{ticker}/audit` (signal audit trail)
-20. `GET /api/v1/briefings/ticker/{ticker}` and `POST /api/v1/briefings/watchlist` (AI-style ticker briefings and watchlist recaps)
-21. `POST /api/v1/replay` (seeded replay mode for deterministic demo/event playback)
-22. `POST /api/v1/jobs/ingestion`, `POST /api/v1/jobs/sentiment-batch`, `GET /api/v1/jobs/{job_id}` (background jobs + status tracking)
+16. `WS /api/v1/streaming/ws` (real-time WebSocket updates)
+17. `POST /api/v1/streaming/simulate` (run one ingest → NLP score → signal cycle and broadcast all events to WebSocket subscribers; used by the dashboard "▶ Start simulation" button)
+18. `GET /api/v1/trust/signals/{ticker}/explanation` (article-to-signal traceability + contradiction detection; contributors include article text previews)
+19. `POST /api/v1/trust/annotations` and `GET /api/v1/trust/annotations/{ticker}` (analyst annotation workflow)
+20. `GET /api/v1/trust/signals/{ticker}/audit` (signal audit trail)
+21. `GET /api/v1/briefings/ticker/{ticker}` and `POST /api/v1/briefings/watchlist` (AI-style ticker briefings and watchlist recaps)
+22. `POST /api/v1/replay` (seeded replay mode for deterministic demo/event playback)
+23. `POST /api/v1/jobs/ingestion`, `POST /api/v1/jobs/sentiment-batch`, `GET /api/v1/jobs/{job_id}` (background jobs + status tracking)
 
 ## Quick Start
 ### Run with Docker
@@ -97,6 +103,7 @@ make demo-seed
 - `MSFT`
 - `TSLA`
 - `NVDA`
+- `AMZN`
 
 ## Next Steps
 - Connect simulated price/news ingestion to real market/news providers.
