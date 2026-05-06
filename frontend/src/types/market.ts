@@ -2,9 +2,13 @@ export interface TickerAggregation {
   ticker: string;
   article_count: number;
   avg_score: number;
+  avg_confidence: number;
+  weighted_sentiment_score: number;
+  weighted_confidence: number;
   positive_ratio: number;
   neutral_ratio: number;
   negative_ratio: number;
+  source_breakdown: Record<string, number>;
   window_start: string;
   window_end: string;
 }
@@ -148,6 +152,7 @@ export interface SignalContributor {
   score: number;
   confidence: number;
   contribution_weight: number;
+  text_preview: string;
 }
 
 export interface SourceContradiction {

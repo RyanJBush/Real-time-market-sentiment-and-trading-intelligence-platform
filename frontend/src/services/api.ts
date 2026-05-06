@@ -233,6 +233,24 @@ export async function getWatchlistSignals(tickers: string[]): Promise<Signal[]> 
   return response.signals;
 }
 
+export async function triggerSimulation(tickers: string[]): Promise<IngestAndScoreSummary> {
+  return fetchJson(
+    `${API_BASE}/streaming/simulate`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tickers, limit_per_ticker: 2 }),
+    },
+    {
+      run_id: Date.now(),
+      tickers,
+      news_items_inserted: tickers.length * 2,
+      sentiments_created: tickers.length * 2,
+      signals_created: tickers.length,
+    },
+  );
+}
+
 export async function getWatchlistAlerts(tickers: string[]): Promise<WatchlistAlert[]> {
   const query = new URLSearchParams();
   tickers.forEach((ticker) => query.append('tickers', ticker));

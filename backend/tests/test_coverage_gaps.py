@@ -36,6 +36,18 @@ def test_stream_status_endpoint(client) -> None:
     assert "subscribers" in response.json()
 
 
+def test_streaming_simulate_endpoint(client) -> None:
+    response = client.post(
+        "/api/v1/streaming/simulate",
+        json={"tickers": ["AAPL", "TSLA"], "limit_per_ticker": 2},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert "news_inserted" in body
+    assert "events_broadcast" in body
+    assert body["events_broadcast"] >= body["news_inserted"]
+
+
 def test_stream_websocket_echo(client) -> None:
     with client.websocket_connect("/api/v1/streaming/ws") as websocket:
         connected = websocket.receive_json()

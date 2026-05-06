@@ -10,6 +10,7 @@ class SignalContributor(BaseModel):
     score: float
     confidence: float
     contribution_weight: float
+    text_preview: str = ""  # first 200 chars of the source article driving this contribution
 
 
 class SourceContradiction(BaseModel):

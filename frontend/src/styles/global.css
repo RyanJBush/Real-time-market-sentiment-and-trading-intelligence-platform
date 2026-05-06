@@ -182,16 +182,51 @@ select {
   border-radius: 0.55rem;
   padding: 0.45rem 0.75rem;
   cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s;
 }
 
 .action-button:hover {
   background: #111b33;
 }
 
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Live simulation button variants */
+.action-button.sim-start {
+  border-color: #166534;
+  color: #4ade80;
+}
+
+.action-button.sim-start:hover {
+  background: #052e16;
+}
+
+.action-button.sim-active {
+  border-color: #b45309;
+  color: #fbbf24;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+  50% { box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18); }
+}
+
 .badge {
   border-radius: 999px;
   padding: 0.2rem 0.55rem;
   font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-sm {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.7rem;
 }
 
 .badge.positive {
@@ -209,8 +244,26 @@ select {
   background: rgba(148, 163, 184, 0.16);
 }
 
+.badge-model {
+  font-size: 0.7rem;
+  color: #475569;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  display: inline-block;
+}
+
 .muted {
   color: #94a3b8;
+}
+
+.positive-text {
+  color: #4ade80;
+}
+
+.negative-text {
+  color: #f87171;
 }
 
 .ratio-row {
@@ -218,4 +271,93 @@ select {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.5rem;
+}
+
+/* ─── Sentiment bar ───────────────────────────────────────── */
+.sentiment-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #0f172a;
+  margin-top: 0.5rem;
+}
+
+.sentiment-bar-fill {
+  transition: width 0.4s ease;
+  height: 100%;
+}
+
+.sentiment-bar-fill.positive {
+  background: #22c55e;
+}
+
+.sentiment-bar-fill.neutral {
+  background: #475569;
+}
+
+.sentiment-bar-fill.negative {
+  background: #ef4444;
+}
+
+.sentiment-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  margin-top: 0.3rem;
+  color: #64748b;
+}
+
+.sentiment-bar-labels .positive-text {
+  color: #4ade80;
+}
+
+.sentiment-bar-labels .negative-text {
+  color: #f87171;
+}
+
+/* ─── Ticker sentiment grid ──────────────────────────────── */
+.ticker-sentiment-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 0.85rem;
+}
+
+.ticker-sentiment-card {
+  border: 1px solid #1e293b;
+  border-radius: 0.7rem;
+  padding: 0.75rem;
+  background: #070e1f;
+}
+
+.ticker-sentiment-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.ticker-score {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+  letter-spacing: -0.02em;
+}
+
+.ticker-score.positive {
+  color: #4ade80;
+}
+
+.ticker-score.negative {
+  color: #f87171;
+}
+
+.ticker-score.neutral {
+  color: #94a3b8;
+}
+
+.ticker-coverage {
+  font-size: 0.72rem;
+  margin-top: 0.35rem;
 }

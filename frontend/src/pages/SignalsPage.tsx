@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import PageHeader from '../components/PageHeader';
+import SignalBadge from '../components/dashboard/SignalBadge';
 import { WATCHLIST } from '../data/mockMarket';
 import { useMarketStream } from '../hooks/useMarketStream';
 import { getBacktestScenarios, getWatchlistAlerts, getWatchlistSignals } from '../services/api';
@@ -26,8 +27,8 @@ function SignalsPage() {
     () =>
       events
         .filter((item) => item.event === 'sentiment_update' && item.ticker && item.score !== undefined)
-        .slice(0, 5)
-        .map((item) => `${item.ticker}: ${item.score}`),
+        .slice(0, 8)
+        .map((item) => `${item.ticker} ${item.label ?? ''} ${Number(item.score) >= 0 ? '+' : ''}${Number(item.score).toFixed(2)}`),
     [events],
   );
 
@@ -41,6 +42,7 @@ function SignalsPage() {
             <tr>
               <th>Ticker</th>
               <th>Signal</th>
+              <th>Score</th>
               <th>Confidence</th>
               <th>Rationale</th>
             </tr>
@@ -50,12 +52,13 @@ function SignalsPage() {
               <tr key={signal.ticker}>
                 <td>{signal.ticker}</td>
                 <td>
-                  <span className={`badge ${signal.signal === 'BUY' ? 'positive' : signal.signal === 'SELL' ? 'negative' : 'neutral'}`}>
-                    {signal.signal}
-                  </span>
+                  <SignalBadge signal={signal.signal} size="sm" />
+                </td>
+                <td className={signal.weighted_score != null && signal.weighted_score > 0 ? 'positive-text' : signal.weighted_score != null && signal.weighted_score < 0 ? 'negative-text' : ''}>
+                  {signal.weighted_score != null ? (signal.weighted_score >= 0 ? '+' : '') + signal.weighted_score.toFixed(3) : '—'}
                 </td>
                 <td>{(signal.confidence * 100).toFixed(1)}%</td>
-                <td>{signal.rationale}</td>
+                <td className="muted">{signal.rationale}</td>
               </tr>
             ))}
           </tbody>
@@ -63,8 +66,16 @@ function SignalsPage() {
       </article>
 
       <article className="panel">
-        <h3>Recent Stream Scores</h3>
-        <p className="muted">{latestStreamScores.join(' | ') || 'Awaiting stream updates...'}</p>
+        <h3>Recent Stream Events</h3>
+        {latestStreamScores.length ? (
+          <div style={{ display: 'flex', gap: '0.55rem', flexWrap: 'wrap', marginTop: '0.45rem' }}>
+            {latestStreamScores.map((item, i) => (
+              <span key={i} className="badge-model">{item}</span>
+            ))}
+          </div>
+        ) : (
+          <p className="muted" style={{ marginTop: '0.45rem' }}>Awaiting stream updates…</p>
+        )}
       </article>
 
       <article className="panel">

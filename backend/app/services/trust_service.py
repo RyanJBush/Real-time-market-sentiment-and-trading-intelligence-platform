@@ -62,6 +62,7 @@ class TrustService:
                     score=round(row.score, 4),
                     confidence=round(row.confidence, 4),
                     contribution_weight=round(abs(direction * row.score * weight), 4),
+                    text_preview=row.text[:200] if row.text else "",
                 )
             )
             source_bucket = contradiction_map.setdefault(row.source, {"positive": 0, "negative": 0})
