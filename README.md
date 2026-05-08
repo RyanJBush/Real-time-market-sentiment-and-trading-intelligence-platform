@@ -1,114 +1,113 @@
-# Helix AI Monorepo
+# 📈 Real-Time Market Sentiment & Trading Intelligence Platform
 
-Simple but realistic scaffold for a real-time stock sentiment platform.
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-FinBERT-FFD21E?style=flat&logo=huggingface&logoColor=black)
 
-## Stack
-- FastAPI backend (REST + WebSockets)
-- React frontend (Vite + TypeScript)
-- PostgreSQL persistence
-- Hugging Face Transformers NLP (FinBERT + fallback)
-- Docker compose for local orchestration
-- GitHub Actions CI pipeline
+A full-stack, production-style platform that ingests financial news and social data, runs NLP-based sentiment scoring using FinBERT, generates BUY/SELL/HOLD trading signals, and streams real-time analytics to a React dashboard via WebSockets.
 
-## Frontend pages
-- Dashboard
-- Ticker View
-- News Feed
-- Signals
+---
 
-## Frontend features
-- KPI cards (sentiment index, active signals, top movers, watchlist alerts, stream health)
-- Ticker sentiment grid with stacked positive/neutral/negative bars
-- Trend-aware sentiment sparkline charts (area fill, grid, gradient accent colour)
-- Ticker filtering and detail drill-downs
-- Signal badges (colour-coded BUY / SELL / HOLD)
-- "▶ Start simulation" button that runs ingest → NLP → signal on a 10-second loop and broadcasts WebSocket events
-- Article sentiment feed with per-article label, score, confidence, and model used
-- Signal explainability panel: article text → sentiment score → signal with source-contradiction detection
-- Real-time event tape updated via WebSocket + mock stream fallback
+## 🎯 What I Built & Why
 
-## Implemented backend workflow
-1. `POST /api/v1/news/ingest` (multi-source ingestion: news + social + simulated price bars, cleaning, dedupe, batch run tracking)
-   - `POST /api/v1/news/ingest-and-score` to execute ingestion → sentiment persistence → signal generation in one call.
-2. `GET /api/v1/news/ingest/status/{run_id}` (ingestion status)
-3. `POST /api/v1/sentiment/analyze` (finance-aware sentiment + confidence)
-   - Supports headline/body decomposition, topic/event extraction, entity attribution, and optional baseline-vs-advanced model comparison.
-4. `GET /api/v1/analytics/ticker/{ticker}` (weighted aggregation)
-5. `GET /api/v1/analytics/ticker/{ticker}/drilldown` (ticker drill-down metrics/history)
-6. `GET /api/v1/analytics/ticker/{ticker}/metrics` (bucketed sentiment metrics time series)
-7. `GET /api/v1/analytics/overview`, `GET /api/v1/analytics/events/distribution`, `GET /api/v1/analytics/topics/clusters` (dashboard KPI + event/topic analytics)
-8. `GET /api/v1/analytics/ticker/{ticker}/articles` (paginated per-article sentiment table for ticker drill-down)
-9. `GET /api/v1/signals/ticker/{ticker}` (weighted thresholds with tunable params)
-   - Supports multifactor context inputs (event impact, volume z-score, momentum), cooldown conflict handling, and sharp-shift alerts.
-10. `POST /api/v1/signals/watchlist` (watchlist-wide weighted signals)
-11. `GET /api/v1/signals/watchlist/alerts` (watchlist alert center for sharp-shift/low-confidence monitoring)
-12. `POST /api/v1/backtesting` (historical backtest scaffolding + benchmark/precision metrics)
-   - Includes next-day return proxy, intraday move proxy, volatility-change proxy, and return correlation.
-   - Adds trade-quality metrics (`avg_return_per_trade`, `expectancy`, long/short hit rates) and assumptions metadata for transparent interpretation.
-13. `POST /api/v1/backtesting/tune` (threshold tuning grid search)
-14. `GET /api/v1/backtesting/scenarios/{ticker}` (preset scenario leaderboard: conservative/balanced/aggressive)
-15. `POST /api/v1/backtesting/paper-trade` (paper-trading simulation ledger)
-16. `WS /api/v1/streaming/ws` (real-time WebSocket updates)
-17. `POST /api/v1/streaming/simulate` (run one ingest → NLP score → signal cycle and broadcast all events to WebSocket subscribers; used by the dashboard "▶ Start simulation" button)
-18. `GET /api/v1/trust/signals/{ticker}/explanation` (article-to-signal traceability + contradiction detection; contributors include article text previews)
-19. `POST /api/v1/trust/annotations` and `GET /api/v1/trust/annotations/{ticker}` (analyst annotation workflow)
-20. `GET /api/v1/trust/signals/{ticker}/audit` (signal audit trail)
-21. `GET /api/v1/briefings/ticker/{ticker}` and `POST /api/v1/briefings/watchlist` (AI-style ticker briefings and watchlist recaps)
-22. `POST /api/v1/replay` (seeded replay mode for deterministic demo/event playback)
-23. `POST /api/v1/jobs/ingestion`, `POST /api/v1/jobs/sentiment-batch`, `GET /api/v1/jobs/{job_id}` (background jobs + status tracking)
+I built this project to explore the intersection of NLP and quantitative finance. The core challenge was building a pipeline that could go from raw news text → sentiment score → actionable trading signal → live dashboard update in near real-time. Key engineering decisions included:
 
-## Quick Start
-### Run with Docker
+- Using **FinBERT** (a finance-domain fine-tuned BERT model) over generic sentiment models for higher accuracy on financial language
+- Designing a **WebSocket broadcast layer** so the dashboard reacts instantly to ingest/score events without polling
+- Building a **backtesting engine** to evaluate signal quality with trade-quality metrics like expectancy and hit rates
+- Adding **signal explainability** — every BUY/SELL/HOLD traces back to the specific articles that drove it
+
+---
+
+## 📷 Features
+
+- **Multi-source ingestion** — news, social, and simulated price bar data with deduplication and batch tracking
+- **Finance-aware NLP** — FinBERT sentiment with headline/body decomposition, topic extraction, and entity attribution
+- **Signal generation** — weighted threshold signals with multifactor context (volume z-score, momentum, event impact)
+- **Watchlist management** — cross-ticker watchlist signals and sharp-shift alert center
+- **Backtesting & paper trading** — threshold tuning grid search, scenario leaderboards, simulated ledger
+- **Signal trust & auditability** — article-to-signal traceability, contradiction detection, analyst annotations
+- **Real-time WebSocket streaming** — ingest → NLP → signal cycle broadcast live to the dashboard
+- **AI briefings** — per-ticker and watchlist narrative summaries
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend API | FastAPI + SQLAlchemy + PostgreSQL |
+| NLP | Hugging Face Transformers (FinBERT + heuristic fallback) |
+| Frontend | React + Vite + TypeScript + Recharts |
+| Real-time | WebSockets |
+| Infra | Docker Compose + GitHub Actions CI |
+
+---
+
+## 🚀 Quick Start
+
+### Docker (Recommended)
 ```bash
 make up
+# Frontend: http://localhost:5173
+# Backend API docs: http://localhost:8000/docs
 ```
 
-### Run locally (split terminal)
+### Local Development
 ```bash
-# backend
+# Backend
 cd backend
 pip install -r requirements.txt
 cp .env.example .env
 NLP_PROVIDER=heuristic PYTHONPATH=. uvicorn app.main:app --reload --port 8000
 
-# frontend
+# Frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-### Run tests (deterministic local mode)
+### Seed Demo Data
+```bash
+make demo-seed
+```
+
+### Run Tests
 ```bash
 cd backend
 NLP_PROVIDER=heuristic PYTHONPATH=. pytest -q
 ```
 
-### Full local CI parity checks
-```bash
-make ci-local
+---
+
+## 🗂️ Repository Structure
+
+```
+backend/     FastAPI API, NLP pipeline, signal engine, backtesting, tests
+frontend/    React dashboard (sentiment charts, signal feed, watchlist, briefings)
+docs/        Demo runbook and architecture notes
 ```
 
-### Seed replayable demo data
-```bash
-make demo-seed
-```
+---
 
-### Operational checks
-- `GET /health` for liveness
-- `GET /readiness` for DB-backed readiness probe
-- All API responses include `X-Request-Id` for traceability
+## 📊 Example Tickers
 
-## Example tickers
-- `AAPL`
-- `MSFT`
-- `TSLA`
-- `NVDA`
-- `AMZN`
+`AAPL` `MSFT` `TSLA` `NVDA` `AMZN`
 
-## Next Steps
-- Connect simulated price/news ingestion to real market/news providers.
-- Add auth, migrations, and scheduling.
-- Implement charting library + richer portfolio analytics.
+---
 
-## Demo documentation
-- `docs/demo-runbook.md` for deterministic end-to-end demo flow and pre-demo checks.
+## 📝 Key Learnings
+
+- Domain-specific NLP models (FinBERT) meaningfully outperform generic models on financial text
+- WebSocket-based architectures require careful state management on both client and server sides
+- Signal explainability is as important as signal accuracy in finance contexts — any black-box output is unusable in practice
+
+---
+
+## 📄 License
+
+MIT
