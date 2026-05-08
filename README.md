@@ -1,39 +1,85 @@
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat&logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
-![HuggingFace](https://img.shields.io/badge/HuggingFace-FinBERT-FFD21E?style=flat&logo=huggingface&logoColor=black)
 ![CI](https://github.com/RyanJBush/Real-time-market-sentiment-and-trading-intelligence-platform/actions/workflows/ci.yml/badge.svg)
 
-# 📈 Real-Time Market Sentiment & Trading Intelligence Platform
+# Momentum AI
 
-> A full-stack platform that ingests financial news and social data, scores it with FinBERT NLP, generates explainable BUY/SELL/HOLD signals, and streams real-time analytics to a React dashboard via WebSockets.
+> A production-style market sentiment and trading intelligence platform that aggregates financial news and social signals, scores sentiment with an NLP pipeline, generates trade signals, and surfaces insights on a live analyst dashboard.
 
 ---
 
 ## 🎯 What I Built & Why
 
-I built this project to explore the intersection of NLP and quantitative finance. The core challenge was building a pipeline that could go from raw news text → sentiment score → actionable trading signal → live dashboard update in near real-time. Key engineering decisions:
+Sentiment is one of the most persistent alpha sources in quantitative finance, but translating raw text signals into tradeable intelligence is non-trivial. I built Momentum AI to work through the complete pipeline:
 
-- **FinBERT** over generic sentiment models — a finance-domain fine-tuned BERT model produces meaningfully higher accuracy on financial language than general-purpose NLP
-- **WebSocket broadcast layer** — the dashboard reacts instantly to ingest/score events without polling, reflecting how real-time trading tools must behave
-- **Backtesting engine** — signal quality is evaluated with trade-quality metrics (expectancy, hit rates) against historical data, not just accuracy scores
-- **Signal explainability** — every BUY/SELL/HOLD traces back to the specific articles that drove it; any black-box signal is unusable in practice
+- **Multi-source ingestion** — financial news, Reddit/WSB, SEC filings, and earnings call transcripts — because single-source sentiment is easy to game and slow to react
+- **NLP sentiment scoring** — FinBERT-style financial domain scoring, not generic VADER, since financial language has domain-specific sentiment polarity
+- **Signal generation & backtesting** — sentiment signals are turned into directional trade signals and validated against historical price data to measure whether they actually produced alpha
+- **Paper trading mode** — signals feed into a simulated broker API (Alpaca-compatible) for end-to-end validation without real capital
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart TD
+    subgraph Ingestion["Data Ingestion"]
+        NEWS["Financial News\nAPI"]
+        REDDIT["Reddit / WSB\nScraper"]
+        SEC["SEC Filings\nParser"]
+        EARNINGS["Earnings Call\nTranscripts"]
+    end
+
+    subgraph API["FastAPI Backend"]
+        R_FEED["feed router\n/api/feed"]
+        R_SENTIMENT["sentiment router\n/api/sentiment"]
+        R_SIGNALS["signals router\n/api/signals"]
+        R_BACKTEST["backtest router\n/api/backtest"]
+        R_PAPER["paper trading router\n/api/paper"]
+        R_WATCHLIST["watchlist router\n/api/watchlist"]
+        R_AUTH["auth router"]
+    end
+
+    subgraph NLP["NLP Pipeline"]
+        FINBERT["FinBERT\nSentiment Scorer"]
+        AGGREGATOR["Signal\nAggregator"]
+        BACKTEST_ENGINE["Backtest\nEngine"]
+        PAPER_BROKER["Paper Trading\nBroker (Alpaca API)"]  
+    end
+
+    subgraph Data["Data Layer"]
+        PG[("PostgreSQL\nArticles · Scores · Signals · Trades")]
+    end
+
+    subgraph UI["Analyst Dashboard"]
+        DASH["React + TypeScript\nSentiment Feed · Signal View · Backtest Results"]
+    end
+
+    NEWS & REDDIT & SEC & EARNINGS --> R_FEED
+    R_FEED --> FINBERT
+    FINBERT --> AGGREGATOR
+    AGGREGATOR --> R_SIGNALS
+    R_SIGNALS --> BACKTEST_ENGINE & PAPER_BROKER
+    R_FEED & R_SENTIMENT & R_SIGNALS & R_BACKTEST & R_PAPER --> PG
+    DASH -->|"JWT"| R_AUTH
+    DASH --> R_FEED & R_SENTIMENT & R_SIGNALS & R_BACKTEST
+```
 
 ---
 
 ## 📷 Features
 
-- **Multi-source ingestion** — news, social, and simulated price bar data with deduplication and batch tracking
-- **Finance-aware NLP** — FinBERT sentiment with headline/body decomposition, topic extraction, and entity attribution
-- **Signal generation** — weighted threshold signals with multifactor context (volume z-score, momentum, event impact)
-- **Watchlist management** — cross-ticker watchlist signals and sharp-shift alert center
-- **Backtesting & paper trading** — threshold tuning grid search, scenario leaderboards, simulated ledger
-- **Signal trust & auditability** — article-to-signal traceability, contradiction detection, analyst annotations
-- **Real-time WebSocket streaming** — ingest → NLP → signal cycle broadcast live to dashboard
-- **AI briefings** — per-ticker and watchlist narrative summaries
+- **Multi-source ingestion** — financial news, Reddit/WSB, SEC filings, earnings call transcripts
+- **FinBERT sentiment scoring** — financial domain NLP model, not generic sentiment tools
+- **Trade signal generation** — directional signals with confidence thresholds
+- **Backtesting engine** — historical signal validation against price data
+- **Paper trading mode** — Alpaca-compatible simulated broker execution
+- **Live analyst dashboard** — sentiment feed, signal view, and backtest results
+- **Watchlist management** — per-user ticker tracking with alert thresholds
 
 ---
 
@@ -42,47 +88,34 @@ I built this project to explore the intersection of NLP and quantitative finance
 | Layer | Technology |
 |---|---|
 | Backend API | FastAPI + SQLAlchemy + PostgreSQL |
-| NLP | Hugging Face Transformers (FinBERT + heuristic fallback) |
-| Frontend | React + Vite + TypeScript + Recharts |
-| Real-time | WebSockets |
+| NLP | Transformers (FinBERT) + spaCy |
+| Backtesting | Pandas + NumPy |
+| Paper Trading | Alpaca API (paper mode) |
+| Frontend | React + Vite + TypeScript |
 | Infra | Docker Compose + GitHub Actions CI |
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Docker + Docker Compose
-- Python 3.11+
-- Node.js 20+
-
-### Docker (Recommended)
 ```bash
-make up
-# Frontend:         http://localhost:5173
+docker compose up --build
 # Backend API docs: http://localhost:8000/docs
+# Frontend:         http://localhost:5173
 ```
 
 ### Local Development
 ```bash
-# Backend
-cd backend && cp .env.example .env
-pip install -r requirements.txt
-NLP_PROVIDER=heuristic PYTHONPATH=. uvicorn app.main:app --reload --port 8000
+cd backend && pip install -e .[dev]
+cp .env.example .env
+uvicorn app.main:app --reload
 
-# Frontend
-cd frontend && npm install && npm run dev
+cd frontend && npm ci && npm run dev
 ```
 
-### Seed Demo Data
+### Quality Checks
 ```bash
-make demo-seed
-```
-
-### Run Tests
-```bash
-cd backend
-NLP_PROVIDER=heuristic PYTHONPATH=. pytest -q
+make lint && make test
 ```
 
 ---
@@ -90,24 +123,18 @@ NLP_PROVIDER=heuristic PYTHONPATH=. pytest -q
 ## 🗂️ Repository Structure
 
 ```
-backend/     FastAPI API, NLP pipeline, signal engine, backtesting, tests
-frontend/    React dashboard (sentiment charts, signal feed, watchlist, AI briefings)
-docs/        Demo runbook and architecture notes
+backend/    FastAPI API, NLP sentiment pipeline, signal engine, backtest, paper trading, tests
+frontend/   React analyst dashboard
+docs/       Architecture, signal methodology, backtest results
 ```
-
----
-
-## 📊 Example Tickers
-
-`AAPL` `MSFT` `TSLA` `NVDA` `AMZN`
 
 ---
 
 ## 📝 Key Learnings
 
-- Domain-specific NLP models (FinBERT) meaningfully outperform generic models on financial text — the difference in accuracy on earnings call language is significant
-- WebSocket-based architectures require careful state management on both client and server sides, especially around reconnection and backpressure
-- Signal explainability is as important as signal accuracy in finance contexts — any black-box output is unusable in practice for regulated or institutional use
+- Financial domain NLP models (FinBERT) meaningfully outperform general sentiment tools — words like "risk", "gain", and "return" carry opposite polarity in financial vs. general contexts
+- Backtesting sentiment signals against historical price data is essential before trusting them — many sentiment features produce spurious correlations that don't survive out-of-sample testing
+- Multi-source aggregation is more robust than single-source; source-specific biases cancel out when you aggregate across news, social, and filings
 
 ---
 
