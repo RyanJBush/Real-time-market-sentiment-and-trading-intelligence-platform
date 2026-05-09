@@ -6,7 +6,11 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 ![CI](https://github.com/RyanJBush/Real-time-market-sentiment-and-trading-intelligence-platform/actions/workflows/ci.yml/badge.svg)
 
-# Momentum AI
+# Atlas
+
+**Real-Time Market Sentiment & Trading Intelligence Platform**
+
+[**🔗 View Live Preview →**](https://www.perplexity.ai/computer/a/atlas-preview-project-2-of-9-lCA5DWRgQoa4AN6VYPXAUQ)
 
 > A production-style market sentiment and trading intelligence platform that aggregates financial news and social signals, scores sentiment with an NLP pipeline, generates trade signals, and surfaces insights on a live analyst dashboard.
 
@@ -14,7 +18,7 @@
 
 ## 🎯 What I Built & Why
 
-Sentiment is one of the most persistent alpha sources in quantitative finance, but translating raw text signals into tradeable intelligence is non-trivial. I built Momentum AI to work through the complete pipeline:
+Sentiment is one of the most persistent alpha sources in quantitative finance, but translating raw text signals into tradeable intelligence is non-trivial. I built Atlas to work through the complete pipeline:
 
 - **Multi-source ingestion** — financial news, Reddit/WSB, SEC filings, and earnings call transcripts — because single-source sentiment is easy to game and slow to react
 - **NLP sentiment scoring** — FinBERT-style financial domain scoring, not generic VADER, since financial language has domain-specific sentiment polarity
