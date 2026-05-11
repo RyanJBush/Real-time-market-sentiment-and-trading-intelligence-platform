@@ -1,3 +1,5 @@
+from datetime import date
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -12,7 +14,6 @@ from app.schemas.backtest import (
     ThresholdTuningResponse,
 )
 from app.services.backtest_service import backtest_service
-from datetime import date
 
 router = APIRouter()
 

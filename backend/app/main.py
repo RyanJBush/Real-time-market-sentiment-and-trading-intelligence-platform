@@ -9,8 +9,7 @@ from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.core.middleware import inject_request_id
-from app.db.session import Base, engine
-from app.db.session import get_db
+from app.db.session import Base, engine, get_db
 from app.models import annotation, ingestion, news, price, sentiment, signal  # noqa: F401
 
 

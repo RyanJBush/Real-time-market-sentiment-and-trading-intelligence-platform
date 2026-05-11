@@ -1,6 +1,17 @@
 from fastapi import APIRouter
 
-from app.api.v1.routers import analytics, backtesting, briefings, jobs, news, replay, sentiment, signals, streaming, trust
+from app.api.v1.routers import (
+    analytics,
+    backtesting,
+    briefings,
+    jobs,
+    news,
+    replay,
+    sentiment,
+    signals,
+    streaming,
+    trust,
+)
 
 api_router = APIRouter()
 api_router.include_router(news.router, prefix="/news", tags=["news"])

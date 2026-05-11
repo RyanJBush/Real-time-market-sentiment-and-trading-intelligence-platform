@@ -1,9 +1,9 @@
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from hashlib import sha1
 import json
 import random
 import re
+from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
+from hashlib import sha1
 
 from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.models.ingestion import IngestionRun
 from app.models.news import NewsItem
 from app.models.price import PricePoint
-from app.schemas.news import IngestNewsRequest, IngestionRunResponse, NewsItemResponse
+from app.schemas.news import IngestionRunResponse, IngestNewsRequest, NewsItemResponse
 from app.services.weighting_service import get_source_weight
 
 SOURCE_DESCRIPTORS: dict[str, dict[str, str]] = {

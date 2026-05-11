@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 from app.schemas.news import IngestNewsRequest
 from app.schemas.sentiment import SentimentRequest
 
-
 JobType = Literal["ingestion", "sentiment_batch"]
 JobStatus = Literal["queued", "running", "completed", "failed"]
 

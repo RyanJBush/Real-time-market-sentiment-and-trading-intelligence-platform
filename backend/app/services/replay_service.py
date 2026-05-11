@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
 import random
+from datetime import datetime, timezone
 
 from app.schemas.replay import ReplayEvent, ReplayRequest, ReplayResponse
 

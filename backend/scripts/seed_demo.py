@@ -16,7 +16,6 @@ from app.services.nlp_service import nlp_service
 from app.services.signal_service import signal_service
 from app.services.weighting_service import get_source_weight
 
-
 DEFAULT_TICKERS = ["AAPL", "MSFT", "TSLA", "NVDA", "AMZN"]
 
 

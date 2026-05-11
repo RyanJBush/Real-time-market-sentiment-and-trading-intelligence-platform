@@ -1,11 +1,12 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import and_, desc, select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
+from app.models.news import NewsItem
 from app.models.sentiment import SentimentRecord
 from app.models.signal import SignalRecord
-from app.core.config import settings
 from app.schemas.analytics import (
     ArticleScoreRow,
     DashboardOverviewResponse,
@@ -15,13 +16,12 @@ from app.schemas.analytics import (
     TickerAggregationResponse,
     TickerArticleTableResponse,
     TickerDrilldownResponse,
-    TopicClusterSummary,
-    TickerMetricsResponse,
     TickerMetricSnapshot,
+    TickerMetricsResponse,
+    TopicClusterSummary,
 )
-from app.models.news import NewsItem
-from app.services.weighting_service import market_hours_multiplier, time_decay_multiplier
 from app.services.cache_service import TtlCache
+from app.services.weighting_service import market_hours_multiplier, time_decay_multiplier
 
 
 class AggregationService:

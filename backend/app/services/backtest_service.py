@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, time
+from datetime import datetime, time, timezone
 from statistics import pstdev
 
 from sqlalchemy import and_, select
