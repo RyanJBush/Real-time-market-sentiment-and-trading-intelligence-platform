@@ -1,22 +1,20 @@
-# Resume Bullets — Atlas (Market Sentiment and Trading Intelligence Platform)
+# Resume Bullets — Atlas (Market Sentiment & Paper-Trade Simulation Demo)
 
-Use 3–6 bullets per application. All bullets are truthful for an educational, synthetic-data portfolio project.
-
-> Not financial advice. No real trading claims. No brokerage integration claims. Paper-trade style simulation only.
+Use 3–6 bullets per application and tailor to the role.
 
 ## FinTech Analytics / Data Products
-- Built Atlas, a full-stack FinTech analytics platform that ingests synthetic market-news data, performs NLP sentiment scoring, and exposes ticker intelligence through a React dashboard and FastAPI APIs.
-- Designed a modular data-product pipeline (ingestion → scoring → aggregation → signals → historical analytics) with reproducible synthetic fixtures and deterministic default behavior.
-- Implemented source-weighted, time-decayed sentiment aggregation to generate explainable ticker-level BUY/SELL/HOLD signals with rationale and confidence metadata.
+- Built Atlas, a full-stack portfolio demo that ingests market-news inputs, applies NLP sentiment scoring, and serves ticker intelligence through FastAPI endpoints and a React dashboard.
+- Designed a modular analytics pipeline (News → NLP → Signal → Simulation) with reproducible fixtures and explainable output fields for sentiment rationale and confidence.
+- Implemented source-weighted and time-decayed aggregation logic to generate BUY/SELL/HOLD-style signals for paper-trade style simulation.
 
 ## ML / NLP Engineering
-- Implemented a pluggable sentiment architecture with a deterministic heuristic provider and optional transformer-based backend under a shared provider interface.
-- Produced structured NLP outputs (label, score, confidence, topics, events, and entity sentiment) for downstream analytics and product surfaces.
+- Implemented a pluggable sentiment-provider interface with a deterministic baseline and an optional transformer-backed path for comparative NLP behavior.
+- Structured NLP outputs into consistent schemas (label, score, confidence, topics, entities, events) to support downstream analytics and UI views.
 
 ## Backend API Engineering
-- Built versioned FastAPI services with typed Pydantic schemas, SQLAlchemy persistence, and endpoint groups spanning sentiment, analytics, signals, backtesting, trust, and streaming.
-- Added health/readiness probes, test coverage, and CI automation for production-style engineering rigor in a portfolio codebase.
+- Built versioned FastAPI services with typed Pydantic schemas, SQLAlchemy models, and domain endpoints for sentiment, analytics, signal review, and historical scenario analysis.
+- Added health/readiness checks and CI-oriented quality tooling to support maintainable demo-scale backend development.
 
 ## Simulation / Evaluation
-- Implemented historical analysis and threshold scenario testing over synthetic data to evaluate signal behavior.
-- Delivered paper-trade style portfolio simulation for educational performance exploration without real-money execution.
+- Developed historical scenario workflows that evaluate signal behavior on sample datasets without implying brokerage execution.
+- Delivered paper-trade style simulation features that let users explore strategy behavior without real-capital risk.

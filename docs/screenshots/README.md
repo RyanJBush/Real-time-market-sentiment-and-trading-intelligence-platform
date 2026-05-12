@@ -1,30 +1,22 @@
-# Screenshot Documentation — Atlas
+# Screenshots — Atlas
 
-All screenshots in this folder are recruiter-facing visuals for the Atlas portfolio project.
+This folder contains recruiter-facing captures for the Atlas portfolio demo.
 
-> Compliance note: Screenshots represent synthetic/sample data only. They do not indicate real money trading, live brokerage connectivity, or production execution.
+> Compliance note: Screenshots represent sample/demo data and paper-trade style simulation views only. They do not represent real brokerage execution or capital at risk.
 
-## Required screenshot set
-1. `01-dashboard.png` — KPI + sentiment overview dashboard.
-2. `02-news-feed.png` — synthetic news ingestion/sentiment rows.
-3. `03-signal-output.png` — ticker signal with rationale and confidence.
-4. `04-backtest-result.png` — historical analysis + assumptions block.
-5. `05-api-docs.png` — Swagger/OpenAPI docs view.
+## Captured screenshots currently in this folder
+- `01-dashboard.png` — sentiment KPI and dashboard overview.
+- `02-news-feed.png` — market-news feed with NLP-enriched fields.
+- `03-signal-output.png` — signal output with rationale/confidence context.
+- `04-backtest-result.png` — historical scenario analysis view.
+- `05-api-docs.png` — FastAPI Swagger/OpenAPI docs.
 
-## Capture standards
-- Keep URL/path context visible where helpful.
-- Prefer consistent theme and resolution across captures.
-- Ensure at least one visible cue that data is simulated/synthetic.
-- Avoid any language in captions implying real trading or brokerage execution.
+## Suggested additional captures (optional checklist)
+- [ ] Mobile-width dashboard state (375px layout)
+- [ ] Error/empty state handling for missing symbols
+- [ ] Trust/explainability panel close-up
 
-## Recommended caption language
-- "Synthetic-data sentiment dashboard"
-- "Paper-trade style simulation output"
-- "Educational historical analytics"
-- "FastAPI API documentation for portfolio project"
-
-## Regeneration workflow
-1. Start backend (`bash scripts/run_demo.sh`).
-2. Start frontend (`cd frontend && npm run dev`).
-3. Capture screenshots in filename order.
-4. Replace files in place so README links remain stable.
+## Capture guidance
+- Keep filenames stable to avoid broken links in README references.
+- Keep at least one visible indicator that the workflow is simulated/demo-scale.
+- Avoid captions that imply live brokerage execution or guaranteed outcomes.
