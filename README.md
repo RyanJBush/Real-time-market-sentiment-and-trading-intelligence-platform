@@ -99,17 +99,19 @@ This project is designed to show recruiters and hiring managers the **end-to-end
 
 ## 📸 Screenshots / Demo
 
-Recruiter-friendly screenshot set lives in `docs/screenshots/`. The current capture plan covers the demo story end-to-end:
+Recruiter-friendly screenshot set lives in `docs/screenshots/` and is **committed to the repo** so the links below work straight from a fresh clone. All data shown is synthetic / sample.
 
 | # | Screenshot | What it shows |
 |---|---|---|
-| 1 | **Dashboard / Ticker overview** | KPI cards (sentiment index, active signals, top movers, watchlist alerts), trend chart, event tape. |
-| 2 | **Sentiment news feed** | Per-article rows with ticker, source, headline, sentiment label/score/confidence, and the model used. |
-| 3 | **Signal output panel** | Ticker view with BUY/SELL/HOLD signal, weighted score, threshold inputs, rationale, and top contributing articles. |
-| 4 | **Backtest-style result** | Historical comparison JSON or chart — per-day rows, expectancy, confusion matrix, return correlation, `assumptions` block. |
-| 5 | **API docs (Swagger UI)** | `http://localhost:8000/docs` showing the 11 routers under `/api/v1`. |
+| 1 | [**Dashboard**](docs/screenshots/01-dashboard.png) | KPI cards (sentiment index, active signals, top movers, watchlist alerts), trend chart, event distribution, topic clusters, alert center. |
+| 2 | [**Sentiment news feed**](docs/screenshots/02-news-feed.png) | Per-article rows with ticker, source, headline, sentiment label/score/confidence, and the model used (`heuristic`). |
+| 3 | [**Signal output panel**](docs/screenshots/03-signal-output.png) | Ticker view (AAPL) with HOLD/BUY signal, weighted score, sentiment composition, and the article-level sentiment feed. |
+| 4 | [**Backtest-style result**](docs/screenshots/04-backtest-result.png) | `POST /api/v1/backtesting` response — per-day rows, expectancy, confusion matrix, return correlation, `assumptions` block. |
+| 5 | [**API docs (Swagger UI)**](docs/screenshots/05-api-docs.png) | `http://localhost:8000/docs` showing all routers under `/api/v1` (news, sentiment, analytics, signals, backtesting, trust, briefings, jobs, replay, streaming, health). |
 
-See [`docs/screenshots/README.md`](docs/screenshots/README.md) for exact capture instructions (URL, viewport, recommended file names). Captures themselves are not committed to the repo to keep diffs reviewable; add them locally when running the demo.
+![Atlas dashboard](docs/screenshots/01-dashboard.png)
+
+See [`docs/screenshots/README.md`](docs/screenshots/README.md) for capture instructions (URL, viewport, file naming) and notes on regenerating the set.
 
 ---
 
