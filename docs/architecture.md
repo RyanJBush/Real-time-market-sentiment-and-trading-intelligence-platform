@@ -1,6 +1,6 @@
 # Atlas Architecture
 
-> Educational analytics project — no real trading, no live broker, no production deployment.
+> ⚠️ **Educational analytics project.** No real trading. No live broker integration (no Alpaca, no IBKR, no Robinhood). No live news API. No production deployment. All market data, news, and trades shown here are **synthetic / sample** fixtures generated for reproducibility.
 
 ## Services
 
@@ -65,3 +65,50 @@ See [`api.md`](api.md) for full request/response examples.
 - **NLP provider is pluggable** via `SentimentProvider` Protocol so the FinBERT path can be swapped with a fine-tuned head later.
 - **Aggregation cache** (`services/cache_service.py`) reduces repeated rolling-window work in hot dashboard reads.
 - **Determinism by default** — the heuristic NLP path and synthetic price fixtures produce reproducible outputs so the demo is stable and tests stay hermetic.
+
+## Component Responsibilities
+
+| Component | Path | Responsibility |
+|---|---|---|
+| Routers | `backend/app/api/v1/routers/` | HTTP / WebSocket surface; request validation; thin orchestration over services |
+| NLP service | `backend/app/services/nlp_service.py` | Sentiment scoring with `SentimentProvider` Protocol; lexicon heuristic + optional FinBERT |
+| Aggregation service | `backend/app/services/aggregation_service.py` | Source-weighted, time-decayed rolling stats per ticker |
+| Signal service | `backend/app/services/signal_service.py` | BUY / SELL / HOLD generation with thresholds, min-confidence gate, rationale |
+| Backtest service | `backend/app/services/backtest_service.py` | Historical comparison vs synthetic forward returns; expectancy, confusion matrix, paper-trade NAV |
+| Trust service | `backend/app/services/trust_service.py` | Top-contributing articles, annotations, audit log |
+| News / ingestion service | `backend/app/services/news_service.py` | Generates deterministic synthetic news batches across 4 source types |
+| Cache service | `backend/app/services/cache_service.py` | In-memory cache for hot dashboard reads |
+| Models | `backend/app/models/` | SQLAlchemy models: news, sentiment, signal, annotation, ingestion, price |
+| Schemas | `backend/app/schemas/` | Pydantic v2 request/response DTOs |
+| Core | `backend/app/core/` | Settings, logging, request-id middleware |
+
+## Data Model (high level)
+
+```
+News (article)
+  ├── id, ticker, source, headline, body, published_at, ingested_at
+  └── 1:1 ──► Sentiment
+                ├── label, score, confidence
+                ├── headline_score, body_score
+                ├── topics[], events[], entity_sentiment, cluster_id
+                └── model_used
+
+Signal (per ticker, per evaluation)
+  ├── ticker, label, weighted_score, confidence
+  ├── buy_threshold, sell_threshold, min_confidence
+  └── rationale, top_contributors_ref
+
+Annotation                Ingestion run
+  ├── ticker, note         ├── id, mode, sources, counts
+  └── created_at           └── duplicates_skipped
+```
+
+## What is *not* in this architecture
+
+- ❌ Broker / order-management adapter (no Alpaca, no IBKR, no execution venues).
+- ❌ Live market-data feeds (no IEX, no Polygon, no Tiingo, no exchange WebSocket).
+- ❌ Live news connectors (no NewsAPI, no RavenPack, no Benzinga, no Twitter/X firehose).
+- ❌ Authentication / authorization / multi-tenancy / rate limiting.
+- ❌ Production deployment, observability stack, alerting, on-call.
+
+These are intentional out-of-scope items for a portfolio project. The codebase is structured (Protocol-based NLP provider, service-layer separation, `news_service` interface) so any of these can be added later without rewriting the rest of the stack.
