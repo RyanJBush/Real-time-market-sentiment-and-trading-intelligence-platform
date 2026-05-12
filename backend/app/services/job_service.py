@@ -1,7 +1,8 @@
+import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
-import uuid
 
+from app.models.sentiment import SentimentRecord
 from app.schemas.jobs import JobResponse
 from app.schemas.news import IngestNewsRequest
 from app.schemas.sentiment import SentimentRequest
@@ -9,7 +10,6 @@ from app.services.news_service import news_ingestion_service
 from app.services.nlp_service import nlp_service
 from app.services.stream_service import stream_manager
 from app.services.weighting_service import get_source_weight
-from app.models.sentiment import SentimentRecord
 
 
 @dataclass

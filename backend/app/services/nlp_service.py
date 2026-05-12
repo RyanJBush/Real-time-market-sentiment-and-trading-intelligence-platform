@@ -1,7 +1,7 @@
 import logging
+import re
 from datetime import datetime, timezone
 from hashlib import sha1
-import re
 from typing import Protocol
 
 from app.core.config import settings

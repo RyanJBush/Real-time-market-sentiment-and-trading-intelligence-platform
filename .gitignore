@@ -5,4 +5,11 @@ __pycache__/
 node_modules/
 dist/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.db
+*.sqlite
+*.sqlite3
 .DS_Store

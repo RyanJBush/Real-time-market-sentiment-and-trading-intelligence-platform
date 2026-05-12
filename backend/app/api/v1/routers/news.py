@@ -7,7 +7,7 @@ from app.core.middleware import enforce_rate_limit
 from app.db.session import get_db
 from app.models.sentiment import SentimentRecord
 from app.models.signal import SignalRecord
-from app.schemas.news import IngestAndScoreResponse, IngestNewsRequest, IngestionRunResponse, NewsItemResponse
+from app.schemas.news import IngestAndScoreResponse, IngestionRunResponse, IngestNewsRequest, NewsItemResponse
 from app.schemas.sentiment import SentimentRequest
 from app.services.aggregation_service import aggregation_service
 from app.services.news_service import news_ingestion_service

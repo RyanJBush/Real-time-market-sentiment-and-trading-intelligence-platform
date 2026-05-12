@@ -1,0 +1,66 @@
+[
+  {
+    "id": "syn-aapl-001",
+    "ticker": "AAPL",
+    "source": "earnings_wire",
+    "headline": "Apple beats estimates and raises full-year guidance",
+    "body": "Apple reported margin expansion across products and strong demand trends, with services revenue at a record high.",
+    "published_at": "2025-04-29T20:30:00Z"
+  },
+  {
+    "id": "syn-aapl-002",
+    "ticker": "AAPL",
+    "source": "financial_news",
+    "headline": "Analysts upgrade Apple on services momentum",
+    "body": "Multiple sell-side analysts raised price targets citing recurring services revenue and stable hardware mix.",
+    "published_at": "2025-04-30T13:15:00Z"
+  },
+  {
+    "id": "syn-tsla-001",
+    "ticker": "TSLA",
+    "source": "financial_news",
+    "headline": "Tesla margin compression worries persist",
+    "body": "Tesla guidance acknowledged ongoing pricing headwinds and noted caution around near-term demand.",
+    "published_at": "2025-04-28T18:00:00Z"
+  },
+  {
+    "id": "syn-tsla-002",
+    "ticker": "TSLA",
+    "source": "social_curated",
+    "headline": "Retail chatter mixed after Tesla product event",
+    "body": "Social sentiment showed volatile reactions, with bulls citing roadmap clarity and bears flagging execution risk.",
+    "published_at": "2025-04-29T02:45:00Z"
+  },
+  {
+    "id": "syn-msft-001",
+    "ticker": "MSFT",
+    "source": "earnings_wire",
+    "headline": "Microsoft posts strong cloud growth and raises guidance",
+    "body": "Microsoft reported accelerating Azure growth and improved full-year guidance with continued enterprise demand.",
+    "published_at": "2025-04-25T20:00:00Z"
+  },
+  {
+    "id": "syn-msft-002",
+    "ticker": "MSFT",
+    "source": "press_release",
+    "headline": "Microsoft launches new enterprise AI platform feature",
+    "body": "The release expands enterprise tooling and is positioned as a margin-accretive product update.",
+    "published_at": "2025-04-26T14:00:00Z"
+  },
+  {
+    "id": "syn-nvda-001",
+    "ticker": "NVDA",
+    "source": "financial_news",
+    "headline": "Nvidia beat earnings expectations and raised guidance",
+    "body": "Nvidia reported record revenue driven by data-center demand and provided an above-consensus outlook.",
+    "published_at": "2025-04-24T20:30:00Z"
+  },
+  {
+    "id": "syn-amzn-001",
+    "ticker": "AMZN",
+    "source": "financial_news",
+    "headline": "Amazon beats revenue estimates and raises guidance",
+    "body": "Amazon highlighted AWS strength and operating margin expansion alongside steady retail trends.",
+    "published_at": "2025-04-27T20:30:00Z"
+  }
+]
