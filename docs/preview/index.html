@@ -6,68 +6,85 @@
   <title>Atlas Portfolio Preview</title>
   <style>
     :root {
-      --bg: #0f1115;
-      --panel: #171a21;
-      --panel-2: #1d222c;
-      --text: #e7edf5;
-      --muted: #a9b3c2;
-      --green: #1ecb7a;
-      --red: #ff5f6d;
-      --line: #2b3240;
-      --accent: #4da3ff;
+      --bg: #0b0f14;
+      --panel: #121924;
+      --panel-2: #182132;
+      --text: #e6edf7;
+      --muted: #9fb0c7;
+      --line: #2a3850;
+      --green: #22c983;
+      --red: #ff6170;
+      --blue: #58a6ff;
+      --yellow: #ffcc66;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at top, #161a22 0%, var(--bg) 55%);
+      background: radial-gradient(1200px 500px at 20% -10%, #1a2435 0%, var(--bg) 60%);
       color: var(--text);
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
       line-height: 1.5;
     }
-    .wrap { max-width: 1050px; margin: 0 auto; padding: 20px 16px 48px; }
-    .hero, .card, .diagram, .stack, .chart, .disclaimer {
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+    .panel {
       background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
       border: 1px solid var(--line);
       border-radius: 14px;
     }
-    .hero { padding: 24px; margin-bottom: 18px; }
-    h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 4vw, 2.4rem); }
-    .tagline { margin: 0; color: var(--muted); }
-    .pill { display: inline-block; margin-top: 12px; padding: 6px 10px; border-radius: 999px; background: #152635; color: #a7d3ff; font-size: 0.85rem; }
-    .grid { display: grid; gap: 14px; }
-    .features { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 14px; }
-    .card { padding: 16px; }
-    .card h3 { margin: 0 0 8px; font-size: 1rem; }
-    .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    .hero { padding: 22px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 5vw, 2.5rem); }
+    h2 { margin: 0 0 10px; font-size: 1.05rem; }
+    p { margin: 0; }
+    .muted { color: var(--muted); }
+    .pill { display: inline-block; margin-top: 10px; padding: 6px 10px; border-radius: 999px; border: 1px solid #35507a; color: #b9d6ff; background: #112036; font-size: 0.84rem; }
 
-    .diagram { margin-top: 16px; padding: 16px; }
-    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: center; }
-    .step { text-align: center; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #121720; }
-    .arrow { text-align: center; color: var(--muted); font-weight: 600; }
-
-    .stack { margin-top: 16px; padding: 16px; }
-    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
-    .badge { padding: 6px 10px; border: 1px solid #324056; border-radius: 999px; background: #121b29; color: #cfe0f7; font-size: 0.85rem; }
-
-    .chart { margin-top: 16px; padding: 16px; }
-    .chart h2 { margin: 0 0 8px; font-size: 1rem; }
-    .chart small { color: var(--muted); }
-    svg { width: 100%; height: auto; display: block; margin-top: 10px; }
-
-    .disclaimer { margin-top: 16px; padding: 16px; border-left: 4px solid var(--red); }
-    .disclaimer strong { color: #ffd6dc; }
-
-    .actions { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
-    a.btn {
-      text-decoration: none; color: #08121f; background: var(--green);
-      padding: 10px 14px; border-radius: 10px; font-weight: 700;
+    .disclaimer {
+      margin-top: 14px;
+      padding: 14px;
+      border-left: 4px solid var(--red);
+      background: #2b1318;
+      color: #ffd6dc;
+      border-radius: 10px;
+      font-weight: 600;
     }
-    a.btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
 
-    footer { margin-top: 26px; color: var(--muted); font-size: 0.92rem; }
+    .grid { display: grid; gap: 14px; margin-top: 16px; }
+    .cards { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+    .card { padding: 14px; }
+    .card h3 { margin: 0 0 8px; font-size: 0.98rem; }
+    .card p { color: var(--muted); font-size: 0.93rem; }
+
+    .pipeline { padding: 16px; }
+    .steps { display: grid; grid-template-columns: repeat(7, auto); justify-content: space-between; align-items: center; gap: 8px; }
+    .step { padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: #101724; text-align: center; font-weight: 600; }
+    .arrow { color: var(--muted); }
+
+    .chart { padding: 16px; }
+    .legend { display: flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 0.88rem; }
+    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; margin-right: 6px; }
+    .sample { color: var(--yellow); font-weight: 600; }
+    svg { width: 100%; height: auto; margin-top: 10px; display: block; }
+
+    .badges { padding: 16px; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { padding: 6px 10px; border-radius: 999px; border: 1px solid #385279; background: #12203a; color: #d0e1fb; font-size: 0.82rem; }
+
+    .actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 700;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      color: #0a1421;
+      background: var(--green);
+    }
+    .btn.secondary { background: transparent; color: var(--text); border-color: var(--line); }
+
+    footer { margin-top: 20px; color: var(--muted); font-size: 0.9rem; }
     footer a { color: #9ec7ff; }
 
-    @media (max-width: 700px) {
+    @media (max-width: 740px) {
       .steps { grid-template-columns: 1fr; }
       .arrow { display: none; }
     }
@@ -75,66 +92,79 @@
 </head>
 <body>
   <main class="wrap">
-    <section class="hero">
+    <section class="panel hero">
       <h1>Atlas — Portfolio Preview</h1>
-      <p class="tagline">Market sentiment intelligence with explainable signals and paper-trade style simulation workflows.</p>
-      <span class="pill">Demo-scale FinTech analytics project</span>
+      <p class="muted">Educational market sentiment analysis and strategy simulation project.</p>
+      <span class="pill">University of Maryland • InfoSci + EE + Business minor</span>
+      <div class="disclaimer">Not financial advice. No real trading. Atlas runs paper-trade style simulation only.</div>
     </section>
 
-    <section class="diagram">
-      <h2>Sentiment pipeline overview</h2>
+    <section class="panel pipeline grid" style="margin-top: 14px;">
+      <h2>Sentiment pipeline</h2>
       <div class="steps">
-        <div class="step">News</div>
+        <div class="step">Sample/Delayed Data</div>
         <div class="arrow">→</div>
-        <div class="step">NLP</div>
+        <div class="step">NLP Sentiment</div>
         <div class="arrow">→</div>
-        <div class="step">Signal</div>
+        <div class="step">Signal Logic</div>
         <div class="arrow">→</div>
-        <div class="step">Simulation</div>
+        <div class="step">Paper-Trade Simulation</div>
       </div>
     </section>
 
-    <section class="grid features">
-      <article class="card"><h3>Explainable scoring</h3><p>Combines source weighting and time decay to produce sentiment-driven signal context with confidence fields.</p></article>
-      <article class="card"><h3>Backend API surface</h3><p>FastAPI endpoints expose sentiment snapshots, signal details, and historical scenario analysis for demo workflows.</p></article>
-      <article class="card"><h3>Portfolio-style UX</h3><p>React dashboard organizes KPIs, feed views, and strategy outputs for recruiter-friendly walkthroughs.</p></article>
-      <article class="card"><h3>Simulation framing</h3><p>Strategy outputs are presented as paper-trade style simulation, not broker-connected order execution.</p></article>
+    <section class="grid cards">
+      <article class="panel card">
+        <h3>Data Engineering</h3>
+        <p>Normalizes news-like records into structured fields used by analytics and API endpoints.</p>
+      </article>
+      <article class="panel card">
+        <h3>Sentiment Analysis</h3>
+        <p>Generates label/score/confidence outputs that can be traced in ticker-level explanations.</p>
+      </article>
+      <article class="panel card">
+        <h3>Simulation Logic</h3>
+        <p>Produces BUY/SELL/HOLD-style educational signals and evaluates scenarios without broker execution.</p>
+      </article>
+      <article class="panel card">
+        <h3>Portfolio UX</h3>
+        <p>Presents backend outputs in a recruiter-friendly dashboard with transparent limitations.</p>
+      </article>
     </section>
 
-    <section class="stack">
-      <h2>Tech stack</h2>
-      <div class="badges">
-        <span class="badge">Python</span><span class="badge">FastAPI</span><span class="badge">SQLAlchemy</span>
-        <span class="badge">Pydantic</span><span class="badge">pandas</span><span class="badge">React</span>
-        <span class="badge">TypeScript</span><span class="badge">Vite</span><span class="badge">Docker Compose</span>
+    <section class="panel chart">
+      <h2>Sample sentiment + simulated equity trend</h2>
+      <div class="legend">
+        <span><span class="dot" style="background: var(--green)"></span>Positive sentiment (sample)</span>
+        <span><span class="dot" style="background: var(--red)"></span>Negative sentiment (sample)</span>
+        <span class="sample">Dummy data for design preview only</span>
       </div>
-    </section>
-
-    <section class="chart">
-      <h2>Sentiment trend sparkline</h2>
-      <small>Sample data (illustrative only)</small>
-      <svg viewBox="0 0 640 180" role="img" aria-label="Sample sentiment sparkline">
-        <rect x="0" y="0" width="640" height="180" fill="#111722" />
-        <polyline fill="none" stroke="#2b3240" stroke-width="1" points="0,30 640,30"/>
-        <polyline fill="none" stroke="#2b3240" stroke-width="1" points="0,90 640,90"/>
-        <polyline fill="none" stroke="#2b3240" stroke-width="1" points="0,150 640,150"/>
-        <polyline fill="none" stroke="#1ecb7a" stroke-width="4" points="0,130 70,120 140,125 210,90 280,95 350,80 420,70 490,88 560,72 640,60"/>
-        <circle cx="640" cy="60" r="5" fill="#1ecb7a" />
+      <svg viewBox="0 0 760 220" role="img" aria-label="Sample chart with dummy data">
+        <rect x="0" y="0" width="760" height="220" fill="#0f1624" />
+        <g stroke="#2a3850" stroke-width="1">
+          <line x1="0" y1="40" x2="760" y2="40"/>
+          <line x1="0" y1="110" x2="760" y2="110"/>
+          <line x1="0" y1="180" x2="760" y2="180"/>
+        </g>
+        <polyline fill="none" stroke="#22c983" stroke-width="3" points="0,160 80,145 160,150 240,120 320,128 400,102 480,95 560,108 640,88 760,76"/>
+        <polyline fill="none" stroke="#ff6170" stroke-width="2.5" points="0,95 80,110 160,102 240,130 320,116 400,138 480,141 560,122 640,135 760,148"/>
       </svg>
     </section>
 
-    <section class="disclaimer">
-      <strong>⚠️ Not financial advice.</strong>
-      <p>This is a portfolio demo for educational purposes only. Atlas does not execute real trades, place broker orders, or manage real capital.</p>
+    <section class="panel badges" style="margin-top: 14px;">
+      <h2>Tech badges</h2>
+      <div class="badge-row">
+        <span class="badge">Python</span><span class="badge">FastAPI</span><span class="badge">SQLAlchemy</span><span class="badge">Pydantic</span>
+        <span class="badge">pandas</span><span class="badge">React</span><span class="badge">TypeScript</span><span class="badge">Vite</span><span class="badge">Docker Compose</span>
+      </div>
     </section>
 
     <div class="actions">
-      <a class="btn" href="https://github.com/RyanJBush/Real-time-market-sentiment-and-trading-intelligence-platform">View GitHub Repository</a>
-      <a class="btn secondary" href="../screenshots/README.md">Screenshot Documentation</a>
+      <a class="btn" href="https://github.com/RyanJBush/Real-time-market-sentiment-and-trading-intelligence-platform">Repository Link</a>
+      <a class="btn secondary" href="../screenshots/README.md">Screenshot Notes</a>
     </div>
 
     <footer>
-      Built for portfolio review • <a href="https://github.com/RyanJBush">github.com/RyanJBush</a>
+      Portfolio Preview • Atlas educational simulation project • <a href="https://github.com/RyanJBush">github.com/RyanJBush</a>
     </footer>
   </main>
 </body>

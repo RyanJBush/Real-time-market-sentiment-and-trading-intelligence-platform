@@ -1,22 +1,21 @@
-# Screenshots — Atlas
+# Screenshots — Atlas Portfolio Preview
 
-This folder contains recruiter-facing captures for the Atlas portfolio demo.
+This folder contains screenshots for Atlas, an educational market sentiment and paper-trade style simulation project.
 
-> Compliance note: Screenshots represent sample/demo data and paper-trade style simulation views only. They do not represent real brokerage execution or capital at risk.
+> **Disclosure:** Images represent demo/sample workflows only. They do not show live brokerage execution, real-money trades, or investment advice.
 
-## Captured screenshots currently in this folder
-- `01-dashboard.png` — sentiment KPI and dashboard overview.
-- `02-news-feed.png` — market-news feed with NLP-enriched fields.
-- `03-signal-output.png` — signal output with rationale/confidence context.
-- `04-backtest-result.png` — historical scenario analysis view.
-- `05-api-docs.png` — FastAPI Swagger/OpenAPI docs.
+## Current captures
+- `01-dashboard.png` — main dashboard overview with sentiment KPIs.
+- `02-news-feed.png` — sample news feed with sentiment-enriched fields.
+- `03-signal-output.png` — signal details with confidence/rationale context.
+- `04-backtest-result.png` — simulation/backtesting results on sample data.
+- `05-api-docs.png` — API documentation view (FastAPI OpenAPI/Swagger).
 
-## Suggested additional captures (optional checklist)
-- [ ] Mobile-width dashboard state (375px layout)
-- [ ] Error/empty state handling for missing symbols
-- [ ] Trust/explainability panel close-up
+## Usage in docs
+- README references these images as portfolio artifacts.
+- `docs/preview/index.html` is the polished Portfolio Preview landing page.
 
-## Capture guidance
-- Keep filenames stable to avoid broken links in README references.
-- Keep at least one visible indicator that the workflow is simulated/demo-scale.
-- Avoid captions that imply live brokerage execution or guaranteed outcomes.
+## Capture standards
+- Keep filenames stable to avoid broken links.
+- Keep one visible simulated/demo indicator in each capture when practical.
+- Avoid captions implying real trading, guaranteed returns, or broker placement.
