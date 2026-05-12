@@ -2,7 +2,7 @@
 
 All endpoints are mounted under `/api/v1`. The full OpenAPI / Swagger UI is available at `http://localhost:8000/docs` when the backend is running.
 
-> Educational project — sample/synthetic data, deterministic by default.
+> ⚠️ **Educational project — not financial advice.** All data returned by this API is **synthetic / sample**. Deterministic by default (heuristic NLP). No broker integration (no Alpaca, no IBKR, no Robinhood). The `/backtesting/paper-trade` endpoint is an in-memory NAV simulator — **not real trading**.
 
 ---
 

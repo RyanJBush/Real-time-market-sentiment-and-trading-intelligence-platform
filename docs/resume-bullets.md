@@ -2,6 +2,23 @@
 
 ATS-friendly, one-line, third-person-neutral bullets you can drop directly into a resume. Pick 3–6 that best match the role you're applying to. Every bullet is intentionally honest — no claims of production use, real trading, real users, or investment performance.
 
+> ⚠️ Educational portfolio project. **Not financial advice.** No real trades. No broker integration (no Alpaca, IBKR, or Robinhood). All data is **synthetic / sample**.
+
+---
+
+## ⭐ Top 8 (recommended starter set)
+
+These are the 5–8 bullets to lead with on a resume or LinkedIn project entry. They're high-signal, ATS-keyword-rich, and 100% verifiable against the repo.
+
+1. Built **Atlas**, a full-stack FinTech analytics platform in **Python (FastAPI)** and **React (TypeScript)** that ingests sample financial news, scores ticker-level sentiment with an NLP pipeline, and renders BUY/SELL/HOLD signals on an interactive dashboard.
+2. Designed a versioned **FastAPI** backend with **11 routers** (news, sentiment, analytics, signals, backtesting, trust, briefings, jobs, replay, streaming, health) layered Router → Service → Model with **SQLAlchemy 2.x** and **Pydantic v2**.
+3. Implemented a **dual NLP layer** — deterministic finance-tuned lexicon (default) plus an optional **FinBERT / HuggingFace Transformers** backend — behind a shared `SentimentProvider` Protocol, producing label, confidence, topics, events, entity sentiment, and cluster id per article.
+4. Built a **source-weighted, time-decayed aggregation service** that turns per-article sentiment into rolling ticker-level metrics and explainable **BUY/SELL/HOLD** signals with a persisted audit trail and per-signal contributors.
+5. Implemented an **educational backtest-style historical comparison module** producing expectancy, average return per trade, confusion matrix, return correlation, **threshold grid sweeps**, and named scenario presets (conservative / balanced / aggressive) against synthetic price fixtures.
+6. Shipped a **React + Vite + TypeScript + Tailwind** analyst dashboard with KPI cards, sentiment composition bars, ticker drilldown, signal explainability, **WebSocket live event tape**, and a resilient mock-data fallback layer.
+7. Wrote **22 pytest end-to-end tests** (in-memory SQLite, deterministic NLP) and wired **GitHub Actions CI** to run **ruff lint + pytest + frontend production build** on every push and pull request.
+8. Containerized the stack with **Docker Compose** (Postgres + backend + frontend) and added a `Makefile` for one-command local dev (`up`, `test`, `lint`, `demo-seed`, `ci-local`) plus a `scripts/run_demo.sh` driver for a single-command end-to-end demo.
+
 ---
 
 ## Headline / lead bullets
