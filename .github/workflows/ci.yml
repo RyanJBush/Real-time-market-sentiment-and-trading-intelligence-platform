@@ -10,6 +10,8 @@ jobs:
   backend:
     name: Backend (lint + typecheck + test)
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: .
     defaults:
       run:
         working-directory: backend
@@ -24,7 +26,6 @@ jobs:
         run: |
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f pyproject.toml ]; then pip install -e .[dev] 2>/dev/null || pip install -e .; fi
           pip install ruff mypy pytest pytest-cov
       - name: Lint (ruff)
         run: ruff check . --select E,F,W,I --ignore E501
@@ -39,7 +40,6 @@ jobs:
     defaults:
       run:
         working-directory: frontend
-    if: ${{ hashFiles('frontend/package.json') != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
