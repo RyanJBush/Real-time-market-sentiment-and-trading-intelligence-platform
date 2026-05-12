@@ -59,7 +59,7 @@ def ingest_and_score(
     result = news_ingestion_service.ingest_news(db, payload)
     sentiments_created = 0
     signals_created = 0
-    impacted_tickers = sorted({item.ticker.upper() for item in result.items})
+    impacted_tickers = sorted({ticker.upper() for ticker in payload.tickers})
 
     for item in result.items:
         sentiment = nlp_service.analyze_sentiment(
