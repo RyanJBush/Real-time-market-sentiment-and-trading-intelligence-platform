@@ -189,3 +189,11 @@ export interface ScenarioBacktestResponse {
   period_end: string;
   scenarios: ScenarioBacktestResult[];
 }
+
+
+export type BacktestTrade = { date: string; action: string; price: number; sentiment: number; trade_return?: number };
+export type EquityPoint = { date: string; equity: number; sentiment: number; action: string };
+export type BacktestResult = { ticker: string; total_return: number; sharpe_ratio: number; max_drawdown: number; win_rate: number; trade_log: BacktestTrade[]; equity_curve: EquityPoint[] };
+export type FearGreed = { score: number; label: string; components: Record<string, number> };
+export type WatchlistSentimentRow = { ticker: string; avg_sentiment: number; market_cap?: number | null; weighted_sentiment?: number | null };
+export type WatchlistSentiment = { watchlist_id: number; name: string; simple_average_sentiment: number; market_cap_weighted_sentiment?: number | null; breakdown: WatchlistSentimentRow[] };

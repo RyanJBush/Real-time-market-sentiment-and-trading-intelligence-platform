@@ -4,5 +4,6 @@ from app.models.news import NewsItem
 from app.models.price import PricePoint
 from app.models.sentiment import SentimentRecord
 from app.models.signal import SignalRecord
+from app.models.watchlist import MarketCapSnapshot, Watchlist
 
-__all__ = ["NewsItem", "SentimentRecord", "SignalRecord", "IngestionRun", "AnalystAnnotation", "PricePoint"]
+__all__ = ["NewsItem", "SentimentRecord", "SignalRecord", "IngestionRun", "AnalystAnnotation", "PricePoint", "Watchlist", "MarketCapSnapshot"]

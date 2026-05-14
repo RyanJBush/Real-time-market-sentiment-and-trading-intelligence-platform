@@ -1,0 +1,9 @@
+[project]
+name = "atlas-platform"
+version = "0.2.0"
+description = "Atlas real-time market sentiment and trading intelligence platform"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]

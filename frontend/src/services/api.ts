@@ -13,6 +13,9 @@ import type {
   TickerMetricsResponse,
   TopicClusterSummary,
   WatchlistAlert,
+  BacktestResult,
+  FearGreed,
+  WatchlistSentiment,
 } from '../types/market';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/v1';
@@ -272,4 +275,23 @@ export async function getWatchlistAlerts(tickers: string[]): Promise<WatchlistAl
     { generated_at: new Date().toISOString(), alerts: fallback },
   );
   return response.alerts;
+}
+
+
+export async function runBacktest(ticker: string): Promise<BacktestResult> {
+  const end = new Date();
+  const start = new Date(end);
+  start.setDate(end.getDate() - 30);
+  return fetchJson(`${API_BASE}/backtesting/backtest`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ticker, start_date: start.toISOString().slice(0, 10), end_date: end.toISOString().slice(0, 10), buy_threshold: 0.6, sell_threshold: 0.4, min_confidence: 0.4 }),
+  }, { ticker, total_return: 0.08, sharpe_ratio: 0.6, max_drawdown: -0.07, win_rate: 0.56, trade_log: [], equity_curve: [] });
+}
+
+export async function getFearGreed(): Promise<FearGreed> {
+  return fetchJson(`${API_BASE}/market/fear-greed`, undefined, { score: 54, label: 'Neutral', components: { market_sentiment: 55, volatility: 52, momentum: 53, breadth: 56 } });
+}
+
+export async function getWatchlistSentiment(watchlistId: number): Promise<WatchlistSentiment> {
+  return fetchJson(`${API_BASE}/watchlists/${watchlistId}/sentiment`, undefined, { watchlist_id: watchlistId, name: 'Tech', simple_average_sentiment: 0.2, market_cap_weighted_sentiment: 0.24, breakdown: [] });
 }

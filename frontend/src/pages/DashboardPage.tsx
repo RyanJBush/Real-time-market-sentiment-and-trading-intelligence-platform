@@ -7,6 +7,8 @@ import KpiCard from '../components/dashboard/KpiCard';
 import SentimentBar from '../components/dashboard/SentimentBar';
 import SentimentChart from '../components/dashboard/SentimentChart';
 import SignalBadge from '../components/dashboard/SignalBadge';
+import FearGreedGauge from '../components/dashboard/FearGreedGauge';
+import BacktestResultsPanel from '../components/dashboard/BacktestResultsPanel';
 import {
   getDashboardOverview,
   getEventDistribution,
@@ -16,8 +18,10 @@ import {
   getWatchlistAlerts,
   getWatchlistSignals,
   ingestAndScore,
+  getFearGreed,
+  runBacktest,
 } from '../services/api';
-import type { DashboardOverview, EventDistributionItem, Signal, TickerAggregation, TickerMetricsResponse, TopicClusterSummary, WatchlistAlert } from '../types/market';
+import type { BacktestResult, DashboardOverview, EventDistributionItem, FearGreed, Signal, TickerAggregation, TickerMetricsResponse, TopicClusterSummary, WatchlistAlert } from '../types/market';
 
 function DashboardPage() {
   const { events, isLive } = useMarketStream(12);
@@ -29,6 +33,8 @@ function DashboardPage() {
   const [tickerAggregates, setTickerAggregates] = useState<Record<string, TickerAggregation>>({});
   const [primaryMetrics, setPrimaryMetrics] = useState<TickerMetricsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [fearGreed, setFearGreed] = useState<FearGreed | null>(null);
+  const [backtest, setBacktest] = useState<BacktestResult | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simCount, setSimCount] = useState(0);
@@ -59,6 +65,9 @@ function DashboardPage() {
         map[t] = aggResults[i] as TickerAggregation;
       });
       setTickerAggregates(map);
+      const [fg, bt] = await Promise.all([getFearGreed(), runBacktest(WATCHLIST[0])]);
+      setFearGreed(fg);
+      setBacktest(bt);
     } catch {
       setLoadError('Failed to refresh dashboard data.');
     } finally {
@@ -160,6 +169,7 @@ function DashboardPage() {
       {loadError ? <p className="muted">{loadError}</p> : null}
       {simError ? <p className="muted" style={{ color: '#f87171' }}>{simError}</p> : null}
 
+      <FearGreedGauge data={fearGreed} />
       <div className="kpi-grid">
         {kpis.map((kpi) => (
           <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} delta={kpi.delta} tone={kpi.tone} />
@@ -257,6 +267,8 @@ function DashboardPage() {
           )}
         </ul>
       </article>
+
+      <BacktestResultsPanel result={backtest} />
 
       <article className="panel">
         <h3>Watchlist Signals</h3>
