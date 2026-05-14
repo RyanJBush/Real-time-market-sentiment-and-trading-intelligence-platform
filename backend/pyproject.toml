@@ -28,6 +28,7 @@ ignore = ["E501"]
 "tests/*" = ["F401"]
 
 [tool.pytest.ini_options]
+pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-q"
 filterwarnings = [
