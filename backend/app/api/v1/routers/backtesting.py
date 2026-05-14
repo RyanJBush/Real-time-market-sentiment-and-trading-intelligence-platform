@@ -14,6 +14,7 @@ from app.schemas.backtest import (
     ThresholdTuningResponse,
 )
 from app.services.backtest_service import backtest_service
+from app.services.backtesting import TradingRule, backtest_engine
 
 router = APIRouter()
 
@@ -41,3 +42,15 @@ def run_scenarios(
     db: Session = Depends(get_db),
 ) -> ScenarioBacktestResponse:
     return backtest_service.run_scenarios(db, ticker=ticker, start_date=start_date, end_date=end_date)
+
+
+@router.post("/backtest")
+def run_strategy_backtest(payload: BacktestRequest, db: Session = Depends(get_db)) -> dict:
+    return backtest_engine.run(
+        db=db,
+        ticker=payload.ticker.upper(),
+        start_date=payload.start_date,
+        end_date=payload.end_date,
+        sentiment_threshold=payload.buy_threshold,
+        trading_rule=TradingRule(buy_above=payload.buy_threshold, sell_below=payload.sell_threshold),
+    )

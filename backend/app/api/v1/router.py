@@ -6,6 +6,7 @@ from app.api.v1.routers import (
     briefings,
     jobs,
     news,
+    portfolio,
     replay,
     sentiment,
     signals,
@@ -24,3 +25,5 @@ api_router.include_router(trust.router, prefix="/trust", tags=["trust"])
 api_router.include_router(briefings.router, prefix="/briefings", tags=["briefings"])
 api_router.include_router(replay.router, prefix="/replay", tags=["replay"])
 api_router.include_router(jobs.router, prefix="/jobs", tags=["jobs"])
+
+api_router.include_router(portfolio.router, prefix="", tags=["portfolio"])
