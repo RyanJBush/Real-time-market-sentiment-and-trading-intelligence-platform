@@ -1,36 +1,35 @@
-from collections.abc import Generator
+"""CI conftest: stubs heavy ML deps and sets SQLite DATABASE_URL."""
+import os
+import sys
+import tempfile
+from types import ModuleType
+from unittest.mock import MagicMock
 
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
+# --- SQLite test database ---
+_TEST_DB_FILE = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+_TEST_DB_FILE.close()
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{_TEST_DB_FILE.name}")
+os.environ.setdefault("JWT_SECRET", "ci-test-secret")
+os.environ.setdefault("ENVIRONMENT", "test")
 
-from app.db.session import Base, get_db
-from app.main import app
-from app.models import annotation, ingestion, news, sentiment, signal  # noqa: F401
+# --- Stub torch and transformers so imports don’t fail in CI ---
+for _mod_name in [
+    "torch",
+    "torch.nn",
+    "torch.optim",
+    "transformers",
+    "transformers.pipelines",
+    "transformers.models",
+]:
+    if _mod_name not in sys.modules:
+        _stub = ModuleType(_mod_name)
+        _stub.__spec__ = None  # type: ignore[attr-defined]
+        sys.modules[_mod_name] = _stub
 
-
-@pytest.fixture()
-def client() -> Generator[TestClient, None, None]:
-    engine = create_engine(
-        "sqlite:///:memory:",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base.metadata.create_all(bind=engine)
-
-    def override_get_db():
-        db = TestingSessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-
-    app.dependency_overrides[get_db] = override_get_db
-
-    with TestClient(app) as test_client:
-        yield test_client
-
-    app.dependency_overrides.clear()
+# Make torch.Tensor, torch.load etc accessible as MagicMock attributes
+sys.modules["torch"].Tensor = MagicMock()  # type: ignore[attr-defined]
+sys.modules["torch"].load = MagicMock()    # type: ignore[attr-defined]
+sys.modules["torch"].save = MagicMock()    # type: ignore[attr-defined]
+sys.modules["transformers"].pipeline = MagicMock()  # type: ignore[attr-defined]
+sys.modules["transformers"].AutoTokenizer = MagicMock()  # type: ignore[attr-defined]
+sys.modules["transformers"].AutoModelForSequenceClassification = MagicMock()  # type: ignore[attr-defined]
