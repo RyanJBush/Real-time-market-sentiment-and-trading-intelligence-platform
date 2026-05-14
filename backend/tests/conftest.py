@@ -33,3 +33,36 @@ sys.modules["torch"].save = MagicMock()    # type: ignore[attr-defined]
 sys.modules["transformers"].pipeline = MagicMock()  # type: ignore[attr-defined]
 sys.modules["transformers"].AutoTokenizer = MagicMock()  # type: ignore[attr-defined]
 sys.modules["transformers"].AutoModelForSequenceClassification = MagicMock()  # type: ignore[attr-defined]
+
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, event as sa_event
+from sqlalchemy.orm import sessionmaker
+
+
+@pytest.fixture()
+def client():
+    """Provide a TestClient wired to a fresh in-memory SQLite DB."""
+    from app.db.session import Base, get_db
+    from app.main import app
+
+    engine_test = create_engine(
+        os.environ["DATABASE_URL"],
+        connect_args={"check_same_thread": False},
+    )
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
+    Base.metadata.create_all(bind=engine_test)
+
+    def override_get_db():
+        db = TestingSessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+    with TestClient(app) as c:
+        yield c
+    app.dependency_overrides.clear()
+    Base.metadata.drop_all(bind=engine_test)
+
